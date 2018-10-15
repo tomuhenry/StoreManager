@@ -17,11 +17,69 @@
         </div>
         <ul>
             <li><a href="../index.html">Logout</a></li>
-            <li><a href="inventory.html">Inventory</a></li>
+            <li><a href="index.html">Inventory</a></li>
             <li><a href="users.html">Users</a></li>
             <li><a href="profile.html">Profile</a></li>
         </ul>
+        
 
+    </div>
+    
+	<h1>Current Stock and balance</h1> 
+    <div class="flex-container">
+        <div class="stock-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item name</th>
+                        <th>Date Added</th>
+                        <th>Available Stock</th>
+                        <th>size</th>
+                        <th>Unit Price</th>
+                        <th>Expiry Date</th>
+                        <th>Edit Items</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1.</td>
+                        <td>Soap</td>
+                        <td>21/01/2018</td>
+                        <td>20</td>
+                        <td>1kg</td>
+                        <td>4500</td>
+                        <td>22/01/2019</td>
+                        <td><input type="button" value="Edit"><input type="button" value="Delete"></td>
+                    </tr>
+                    <tr>
+                        <td>2.</td>
+                        <td>Cups</td>
+                        <td>30/06/2017</td>
+                        <td>45</td>
+                        <td>500ml</td>
+                        <td>2000</td>
+                        <td>12/01/2059</td>
+                        <td><input type="button" value="Edit"><input type="button" value="Delete"></td>
+                    </tr>
+                    <tr>
+                        <td>3.</td>
+                        <td>Lotion</td>
+                        <td>22/05/2018</td>
+                        <td>120</td>
+                        <td>250g</td>
+                        <td>6500</td>
+                        <td>30/03/2020</td>
+                        <td><input type="button" value="Edit"><input type="button" value="Delete"></td>
+                    </tr>
+
+                </tbody>                
+            </table>
+            <form action="add-stock.html">
+                <input type="submit" id="addItem" value="Add Item">
+            </form>
+            
+        </div>
     </div>
     <footer class="main-footer">
         <p>The Store Management App &copy;Tomusange Henry</p>
