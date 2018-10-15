@@ -1,4 +1,4 @@
-@media only screen and (min-width: 150px) and (max-width: 600px) {
+@media only screen and (min-width: 100px) and (max-width: 600px) {
     .body {
         width: 90%;
         margin: 10px auto;
@@ -10,4 +10,41 @@
     #sidebar {
         width: 30%;
     }
+    .flex-container, .flex-cart {
+        display: flex;
+        flex-direction: column;
+    }
+    .login-body{
+        background-image: none;
+    }
+
+    table{
+        width: auto;
+    }
+
+	table, thead, tbody, th, td, tr {
+
+        text-align: left; 
+		display: block; 
+	}
+	
+	thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	tr {
+         border: 1px solid #ccc; 
+        
+    }
+	
+	td {
+		border: none;
+		border-bottom: 1px solid #ccc; 
+		position: relative;
+		padding-left: 50%; 
+	}
+    
+    
 }
