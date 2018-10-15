@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Store Manager | </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/main.css" />
+    <script src="../static/js/main.js"></script>
+</head>
+<body>
+    <div id="sidebar">
+        <div class="toggle-btn" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul>
+            <li><a href="../index.html">Logout</a></li>
+            <li><a href="index.html">Inventory</a></li>
+            <li><a href="users.html">Users</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+
+    </div>
+    <h1>Add Stock Item Here</h1>
+    <div class="flex-container">
+        <div class="stock-table">
+            <form action="index.html" method="POST">
+                <label for="number">ID</label>
+                <input type="number" name="next-number"><br>
+                <label for="item-name">Item Name</label>
+                <input type="text" name="item-name"><br>
+                <label for="date-added">Date Added</label>
+                <input type="date" name="date-added"><br>
+                <label for="available-stock">Stock number</label>
+                <input type="number" name="stock-number"><br>
+                <label for="size">Unit Size</label>
+                <input type="text" name="size"><br>
+                <label for="unit-price">Unit Price</label>
+                <input type="number" name="unit-price"><br>
+                <label for="expiry-date">Expiry Date</label>
+                <input type="date" name="expiry-date"><br>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+
+    </div>  
+    <footer class="main-footer">
+        <p>The Store Management App &copy;Tomusange Henry</p>
+    </footer>
+</body>
+</html>
