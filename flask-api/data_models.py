@@ -11,6 +11,7 @@ sales = [{
     "sale_id": 1,
     "product_id": 1,
     "sale_quantity": 3,
+    "unit_price": 15000,
     "sale_price": 45000,
     "date_sold": "2018-10-16 11:40:34"
 }]

@@ -81,9 +81,46 @@ def delete_a_product(product_id):
 
     if len(product) == 0:
         abort(500)
-        
+
     products.remove(product[0])
-    return jsonify({"Deleted": "Product {0} was deleted successfully".format(product[0]["product_name"])}), 200
+    return jsonify({"Deleted": 
+    "Product {0} was deleted successfully".format(product[0]["product_name"])}), 200
+
+@app.route('/store-manager/api/v1/admin/sales', methods=['POST'])
+@app.route('/store-manager/api/v1/user/sales', methods=['POST'])
+def add_sales():
+    data = request.json
+
+    product_id = data['product_id']
+    sale_quantity = data['sale_quantity']
+    unit_price = data['sale_price']
+
+    if type(sale_quantity) != int and type(unit_price) != int and type(product_id):
+        abort(400)
+
+    elif not data or data == "":
+        abort(400)
+
+    else:
+        product = [
+        product for product in products if product["product_id"] == product_id]
+        product[0]["product_stock"] = product[0]["product_stock"] - sale_quantity
+
+        if len(product) == 0:
+            abort(500)
+        
+        sale = {
+            "sale_id": sales[-1]["sale_id"]+1,
+            "product_id": product_id,
+            "sale_quantity": sale_quantity,
+            "unit_price": unit_price,
+            "sale_price": unit_price * sale_quantity,
+            "date_sold": time
+        }
+        sales.append(sale)
+        return jsonify({"Success": 
+            " {0} of {1} has been sold worth {2}".format(sale["sale_quantity"], 
+            product[0]["product_name"], sale["sale_price"])}), 200
 
 
 if __name__ == '__main__':
