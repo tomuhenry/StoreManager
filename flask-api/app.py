@@ -22,11 +22,11 @@ def bad_request(error):
 def home():
     return jsonify({"Welcome": "Welcome to the Store manager api"})
 
-
+#Add a product to the list
 @app.route('/store-manager/api/v1/admin/products', methods=['POST'])
 def add_product():
     data = request.json
-    product_id = products[-1]['product_id']+1,
+
     product_category = data['product_category']
     product_name = data['product_name']
     product_specs = data['product_specs']
@@ -41,7 +41,7 @@ def add_product():
 
     else:
         product = {
-            "product_id": product_id,
+            "product_id": products[-1]['product_id']+1,
             "product_category": product_category,
             "product_name": product_name,
             "product_specs": product_specs,
@@ -51,6 +51,10 @@ def add_product():
         products.append(product)
         return jsonify({"Success": "The product '{0}' has been added".format(product["product_name"])}), 200
 
+#View all Products
+@app.route('/store-manager/api/v1/admin/products', methods=['GET'])
+def view_all_products():
+    return jsonify({"Products":products})
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
