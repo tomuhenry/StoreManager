@@ -56,5 +56,10 @@ def add_product():
 def view_all_products():
     return jsonify({"Products":products})
 
+@app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['GET'])
+def view_one_products(product_id):
+    product = [product for product in products if product["product_id"] == product_id]
+    return jsonify({"Product":product[0]})
+
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
