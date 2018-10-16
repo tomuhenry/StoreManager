@@ -17,12 +17,18 @@ def not_found(error):
 def bad_request(error):
     return jsonify({'error': 'Invalid request/input'}), 400
 
+@app.errorhandler(500)
+def server_error(error):
+    return jsonify({'error': 'Server Error has occured, Check input'}), 500
+
 
 @app.route('/store-manager/api/v1/')
 def home():
     return jsonify({"Welcome": "Welcome to the Store manager api"})
 
-#Add a product to the list
+# Add a product to the list
+
+
 @app.route('/store-manager/api/v1/admin/products', methods=['POST'])
 def add_product():
     data = request.json
@@ -51,15 +57,34 @@ def add_product():
         products.append(product)
         return jsonify({"Success": "The product '{0}' has been added".format(product["product_name"])}), 200
 
-#View all Products
+
 @app.route('/store-manager/api/v1/admin/products', methods=['GET'])
 def view_all_products():
-    return jsonify({"Products":products})
+    return jsonify({"Products": products}), 200
+
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['GET'])
-def view_one_products(product_id):
-    product = [product for product in products if product["product_id"] == product_id]
-    return jsonify({"Product":product[0]})
+def view_one_product(product_id):
+    product = [
+        product for product in products if product["product_id"] == product_id]
+
+    if len(product) == 0:
+        abort(500)
+
+    return jsonify({"Product": product[0]}), 200
+
+
+@app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['DELETE'])
+def delete_a_product(product_id):
+    product = [
+        product for product in products if product["product_id"] == product_id]
+
+    if len(product) == 0:
+        abort(500)
+        
+    products.remove(product[0])
+    return jsonify({"Deleted": "Product {0} was deleted successfully".format(product[0]["product_name"])}), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
