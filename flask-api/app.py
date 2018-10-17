@@ -104,10 +104,12 @@ def add_sales():
     else:
         product = [
         product for product in products if product["product_id"] == product_id]
-        product[0]["product_stock"] = product[0]["product_stock"] - sale_quantity
 
-        if len(product) == 0:
+        if len(product) is 0:
             abort(500)
+
+        "reduce the numer of items in the product list by sold items"
+        product[0]["product_stock"] = product[0]["product_stock"] - sale_quantity
         
         sale = {
             "sale_id": sales[-1]["sale_id"]+1,
@@ -122,6 +124,9 @@ def add_sales():
             " {0} of {1} has been sold worth {2}".format(sale["sale_quantity"], 
             product[0]["product_name"], sale["sale_price"])}), 200
 
+@app.route('/store-manager/api/v1/admin/sales', methods=['GET'])
+def get_all_records():
+    return jsonify({"Sales": sales}),200
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
