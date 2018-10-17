@@ -17,6 +17,7 @@ def not_found(error):
 def bad_request(error):
     return jsonify({'error': 'Invalid request/input'}), 400
 
+
 @app.errorhandler(500)
 def server_error(error):
     return jsonify({'error': 'Server Error has occured, Check input'}), 500
@@ -25,8 +26,6 @@ def server_error(error):
 @app.route('/store-manager/api/v1/')
 def home():
     return jsonify({"Welcome": "Welcome to the Store manager api"})
-
-# Add a product to the list
 
 
 @app.route('/store-manager/api/v1/admin/products', methods=['POST'])
@@ -54,8 +53,17 @@ def add_product():
             "product_stock": product_stock,
             "product_price": product_price,
         }
-        products.append(product)
-        return jsonify({"Success": "The product '{0}' has been added".format(product["product_name"])}), 200
+
+        if product in products or [product for product in products 
+            if product["product_category"] == product_category and 
+            product["product_name"] == product_name and product["product_specs"] == product_specs and 
+            product["product_stock"] == product_stock and product["product_price"] == product_price]:
+
+            return jsonify({"Duplicate": "Product already exits"})
+
+        else:
+            products.append(product)
+            return jsonify({"Success": "The product '{0}' has been added".format(product["product_name"])}), 200
 
 
 @app.route('/store-manager/api/v1/admin/products', methods=['GET'])
@@ -83,8 +91,9 @@ def delete_a_product(product_id):
         abort(500)
 
     products.remove(product[0])
-    return jsonify({"Deleted": 
-    "Product {0} was deleted successfully".format(product[0]["product_name"])}), 200
+    return jsonify({"Deleted":
+                    "Product {0} was deleted successfully".format(product[0]["product_name"])}), 200
+
 
 @app.route('/store-manager/api/v1/admin/sales', methods=['POST'])
 @app.route('/store-manager/api/v1/user/sales', methods=['POST'])
@@ -103,18 +112,19 @@ def add_sales():
 
     else:
         product = [
-        product for product in products if product["product_id"] == product_id]
+            product for product in products if product["product_id"] == product_id]
 
         if len(product) is 0:
             abort(500)
 
         "reduce the numer of items in the product list by sold items"
         if sale_quantity > product[0]["product_stock"]:
-            return jsonify({"Out of Stock":"Sorry, Not enough items in stock"})
+            return jsonify({"Out of Stock": "Sorry, Not enough items in stock"})
 
         else:
-            product[0]["product_stock"] = product[0]["product_stock"] - sale_quantity
-        
+            product[0]["product_stock"] = product[0]["product_stock"] - \
+                sale_quantity
+
             sale = {
                 "sale_id": sales[-1]["sale_id"]+1,
                 "product_id": product_id,
@@ -124,13 +134,16 @@ def add_sales():
                 "date_sold": time
             }
             sales.append(sale)
-            return jsonify({"Success": 
-                " {0} of {1} has been sold worth {2}".format(sale["sale_quantity"], 
-                product[0]["product_name"], sale["sale_price"])}), 200
+            return jsonify({"Success":
+                            " {0} of {1} has been sold worth {2}".format(sale["sale_quantity"],
+                                                                         product[0]["product_name"],
+                                                                         sale["sale_price"])}), 200
+
 
 @app.route('/store-manager/api/v1/admin/sales', methods=['GET'])
 def get_all_records():
-    return jsonify({"Sales": sales}),200
+    return jsonify({"Sales": sales}), 200
+
 
 @app.route('/store-manager/api/v1/admin/sales/<int:sale_id>', methods=['GET'])
 def view_one_record(sale_id):
@@ -141,6 +154,7 @@ def view_one_record(sale_id):
         abort(500)
 
     return jsonify({"Sale": sale[0]}), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
