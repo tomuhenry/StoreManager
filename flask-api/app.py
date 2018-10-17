@@ -122,6 +122,9 @@ def add_sales():
             " {0} of {1} has been sold worth {2}".format(sale["sale_quantity"], 
             product[0]["product_name"], sale["sale_price"])}), 200
 
+@app.route('/store-manager/api/v1/admin/sales', methods=['GET'])
+def get_all_records():
+    return jsonify({"Sales": sales}),200
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
