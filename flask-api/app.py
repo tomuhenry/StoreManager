@@ -104,10 +104,12 @@ def add_sales():
     else:
         product = [
         product for product in products if product["product_id"] == product_id]
-        product[0]["product_stock"] = product[0]["product_stock"] - sale_quantity
 
-        if len(product) == 0:
+        if len(product) is 0:
             abort(500)
+
+        "reduce the numer of items in the product list by sold items"
+        product[0]["product_stock"] = product[0]["product_stock"] - sale_quantity
         
         sale = {
             "sale_id": sales[-1]["sale_id"]+1,
