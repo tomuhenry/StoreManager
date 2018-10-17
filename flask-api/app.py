@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, json, request, abort, session
-from data_models import products, sales
-from functions import Products, Sales
+from functions import Products, Sales, sales, products
 
 app = Flask(__name__)
 
