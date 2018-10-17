@@ -1,5 +1,4 @@
 from flask import jsonify, abort
-# from data_models import products, sales
 from datetime import datetime
 
 time = str(datetime.now())
