@@ -4,8 +4,9 @@ from datetime import datetime
 
 time = str(datetime.now())
 
+
 class Products:
-    
+
     def __init__(self, product_category, product_name, product_specs, product_stock, product_price):
         self.product_category = product_category
         self.product_name = product_name
@@ -23,10 +24,10 @@ class Products:
             "product_price": self.product_price,
         }
 
-        if product in products or [product for product in products 
-            if product["product_category"] == self.product_category and 
-            product["product_name"] == self.product_name and product["product_specs"] == self.product_specs and 
-            product["product_stock"] == self.product_stock and product["product_price"] == self.product_price]:
+        if product in products or [product for product in products
+                                   if product["product_category"] == self.product_category and
+                                   product["product_name"] == self.product_name and product["product_specs"] == self.product_specs and
+                                   product["product_stock"] == self.product_stock and product["product_price"] == self.product_price]:
 
             return False
 
@@ -34,9 +35,9 @@ class Products:
             products.append(product)
             return True
 
-        
+
 class Sales:
-    def __init__(self,product_id,sale_quantity,unit_price):
+    def __init__(self, product_id, sale_quantity, unit_price):
         self.product_id = product_id
         self.sale_quantity = sale_quantity
         self.unit_price = unit_price
