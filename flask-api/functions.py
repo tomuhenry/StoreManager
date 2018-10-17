@@ -34,6 +34,7 @@ class Products:
             products.append(product)
             return True
 
+        
 class Sales:
     def __init__(self,product_id,sale_quantity,unit_price):
         self.product_id = product_id

@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, json, request, abort, session
 from data_models import products, sales
 from functions import Products, Sales
-from datetime import datetime
 
 app = Flask(__name__)
 
@@ -28,7 +27,6 @@ def home():
 
 @app.route('/store-manager/api/v1/admin/products', methods=['POST'])
 def add_product():
-    
     data = request.json
 
     product_category = data['product_category']
@@ -37,16 +35,10 @@ def add_product():
     product_stock = data['product_stock']
     product_price = data['product_price']
 
-    
-    product_cls = Products(product_category, product_name, product_specs, product_stock, product_price)
+    product_cls = Products(product_category, product_name,
+                           product_specs, product_stock, product_price)
 
-    if type(product_stock) != int and type(product_price) != int:
-        abort(400)
-
-    elif not data or data == "":
-        abort(400)
-
-    elif product_cls.add_product() is True:
+    if product_cls.add_product() is True:
         return jsonify({"Success": "The product has been added"}), 200
 
     else:
@@ -64,9 +56,35 @@ def view_one_product(product_id):
         product for product in products if product["product_id"] == product_id]
 
     if len(product) == 0:
-        abort(500)
+        abort(404)
 
     return jsonify({"Product": product[0]}), 200
+
+
+@app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['PUT'])
+def edit_product(product_id):
+    data = request.json
+
+    try:
+
+        product_stock = int(data['product_stock'])
+        product_price = int(data['product_price'])
+
+        product = [
+            product for product in products if product["product_id"] == product_id]
+
+        if len(product) == 0:
+            abort(500)
+
+        else:
+            product[0]["product_stock"] = product_stock
+            product[0]["product_price"] = product_price
+
+            return jsonify({"Updated":
+                            "Product {0} was updated successfully".format(product[0]["product_name"])}), 200
+
+    except:
+        abort(500)
 
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['DELETE'])
@@ -75,7 +93,7 @@ def delete_a_product(product_id):
         product for product in products if product["product_id"] == product_id]
 
     if len(product) == 0:
-        abort(500)
+        abort(404)
 
     products.remove(product[0])
     return jsonify({"Deleted":
@@ -91,7 +109,7 @@ def add_sales():
     sale_quantity = data['sale_quantity']
     unit_price = data['sale_price']
 
-    sale_cls = Sales(product_id,sale_quantity,unit_price)
+    sale_cls = Sales(product_id, sale_quantity, unit_price)
 
     if type(sale_quantity) != int and type(unit_price) != int and type(product_id):
         abort(400)
@@ -100,7 +118,7 @@ def add_sales():
         abort(400)
 
     elif sale_cls.add_sale() is True:
-        return jsonify({"Success":"The sale item has been added"})
+        return jsonify({"Success": "The sale item has been added"})
 
     else:
         return jsonify({"Out of Stock": "Sorry, Not enough items in stock"})
@@ -117,7 +135,7 @@ def view_one_record(sale_id):
         sale for sale in sales if sale["sale_id"] == sale_id]
 
     if len(sale) == 0:
-        abort(500)
+        abort(404)
 
     return jsonify({"Sale": sale[0]}), 200
 
