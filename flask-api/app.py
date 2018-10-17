@@ -109,24 +109,38 @@ def add_sales():
             abort(500)
 
         "reduce the numer of items in the product list by sold items"
-        product[0]["product_stock"] = product[0]["product_stock"] - sale_quantity
+        if sale_quantity > product[0]["product_stock"]:
+            return jsonify({"Out of Stock":"Sorry, Not enough items in stock"})
+
+        else:
+            product[0]["product_stock"] = product[0]["product_stock"] - sale_quantity
         
-        sale = {
-            "sale_id": sales[-1]["sale_id"]+1,
-            "product_id": product_id,
-            "sale_quantity": sale_quantity,
-            "unit_price": unit_price,
-            "sale_price": unit_price * sale_quantity,
-            "date_sold": time
-        }
-        sales.append(sale)
-        return jsonify({"Success": 
-            " {0} of {1} has been sold worth {2}".format(sale["sale_quantity"], 
-            product[0]["product_name"], sale["sale_price"])}), 200
+            sale = {
+                "sale_id": sales[-1]["sale_id"]+1,
+                "product_id": product_id,
+                "sale_quantity": sale_quantity,
+                "unit_price": unit_price,
+                "sale_price": unit_price * sale_quantity,
+                "date_sold": time
+            }
+            sales.append(sale)
+            return jsonify({"Success": 
+                " {0} of {1} has been sold worth {2}".format(sale["sale_quantity"], 
+                product[0]["product_name"], sale["sale_price"])}), 200
 
 @app.route('/store-manager/api/v1/admin/sales', methods=['GET'])
 def get_all_records():
     return jsonify({"Sales": sales}),200
+
+@app.route('/store-manager/api/v1/admin/sales/<int:sale_id>', methods=['GET'])
+def view_one_record(sale_id):
+    sale = [
+        sale for sale in sales if sale["sale_id"] == sale_id]
+
+    if len(sale) == 0:
+        abort(500)
+
+    return jsonify({"Sale": sale[0]}), 200
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
