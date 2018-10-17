@@ -1,11 +1,9 @@
 from flask import Flask, jsonify, json, request, abort, session
 from data_models import products, sales
+from functions import Products, Sales
 from datetime import datetime
-import os
 
 app = Flask(__name__)
-
-time = str(datetime.now())
 
 
 @app.errorhandler(404)
@@ -30,6 +28,7 @@ def home():
 
 @app.route('/store-manager/api/v1/admin/products', methods=['POST'])
 def add_product():
+    
     data = request.json
 
     product_category = data['product_category']
@@ -38,32 +37,20 @@ def add_product():
     product_stock = data['product_stock']
     product_price = data['product_price']
 
+    
+    product_cls = Products(product_category, product_name, product_specs, product_stock, product_price)
+
     if type(product_stock) != int and type(product_price) != int:
         abort(400)
 
     elif not data or data == "":
         abort(400)
 
+    elif product_cls.add_product() is True:
+        return jsonify({"Success": "The product has been added"}), 200
+
     else:
-        product = {
-            "product_id": products[-1]['product_id']+1,
-            "product_category": product_category,
-            "product_name": product_name,
-            "product_specs": product_specs,
-            "product_stock": product_stock,
-            "product_price": product_price,
-        }
-
-        if product in products or [product for product in products 
-            if product["product_category"] == product_category and 
-            product["product_name"] == product_name and product["product_specs"] == product_specs and 
-            product["product_stock"] == product_stock and product["product_price"] == product_price]:
-
-            return jsonify({"Duplicate": "Product already exits"})
-
-        else:
-            products.append(product)
-            return jsonify({"Success": "The product '{0}' has been added".format(product["product_name"])}), 200
+        return jsonify({"Duplicate": "The product already exits"})
 
 
 @app.route('/store-manager/api/v1/admin/products', methods=['GET'])
@@ -104,40 +91,19 @@ def add_sales():
     sale_quantity = data['sale_quantity']
     unit_price = data['sale_price']
 
+    sale_cls = Sales(product_id,sale_quantity,unit_price)
+
     if type(sale_quantity) != int and type(unit_price) != int and type(product_id):
         abort(400)
 
     elif not data or data == "":
         abort(400)
 
+    elif sale_cls.add_sale() is True:
+        return jsonify({"Success":"The sale item has been added"})
+
     else:
-        product = [
-            product for product in products if product["product_id"] == product_id]
-
-        if len(product) is 0:
-            abort(500)
-
-        "reduce the numer of items in the product list by sold items"
-        if sale_quantity > product[0]["product_stock"]:
-            return jsonify({"Out of Stock": "Sorry, Not enough items in stock"})
-
-        else:
-            product[0]["product_stock"] = product[0]["product_stock"] - \
-                sale_quantity
-
-            sale = {
-                "sale_id": sales[-1]["sale_id"]+1,
-                "product_id": product_id,
-                "sale_quantity": sale_quantity,
-                "unit_price": unit_price,
-                "sale_price": unit_price * sale_quantity,
-                "date_sold": time
-            }
-            sales.append(sale)
-            return jsonify({"Success":
-                            " {0} of {1} has been sold worth {2}".format(sale["sale_quantity"],
-                                                                         product[0]["product_name"],
-                                                                         sale["sale_price"])}), 200
+        return jsonify({"Out of Stock": "Sorry, Not enough items in stock"})
 
 
 @app.route('/store-manager/api/v1/admin/sales', methods=['GET'])
