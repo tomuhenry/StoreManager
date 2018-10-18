@@ -28,3 +28,8 @@ class SalesTestCase(TestCase):
         response = self.testclient.get('/store-manager/api/v1/admin/sales/1')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Sale", response.data)
+
+    def test_sale_not_found(self):
+        response = self.testclient.get('/store-manager/api/v1/admin/sales/10')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(b"Not found", response.data)
