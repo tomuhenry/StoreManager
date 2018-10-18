@@ -10,6 +10,14 @@ products = [{
             "product_specs": "700ml",
             "product_stock": 15,
             "product_price": 15000
+        },
+        {
+            "product_id": 2,
+            "product_category": "foods",
+            "product_name": "chicken",
+            "product_specs": "1kg",
+            "product_stock": 25,
+            "product_price": 11000
         }]
 
 sales = [{

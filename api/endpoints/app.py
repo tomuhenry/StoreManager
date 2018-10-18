@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, json, request, abort, session
-from functions import Products, Sales, sales, products
+from api.endpoints.functions import Products, Sales, sales, products
 
 app = Flask(__name__)
 
@@ -37,7 +37,7 @@ def add_product():
                            product_specs, product_stock, product_price)
 
     if product_cls.add_product() is True:
-        return jsonify({"Success": "The product has been added"}), 200
+        return jsonify({"Success": "The product has been added"})
 
     else:
         return jsonify({"Duplicate": "The product already exits"})
@@ -45,7 +45,7 @@ def add_product():
 
 @app.route('/store-manager/api/v1/admin/products', methods=['GET'])
 def view_all_products():
-    return jsonify({"Products": products}), 200
+    return jsonify({"Products": products})
 
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['GET'])
@@ -56,7 +56,7 @@ def view_one_product(product_id):
     if len(product) == 0:
         abort(404)
 
-    return jsonify({"Product": product[0]}), 200
+    return jsonify({"Product": product[0]})
 
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['PUT'])
@@ -79,7 +79,7 @@ def edit_product(product_id):
             product[0]["product_price"] = product_price
 
             return jsonify({"Updated":
-                            "Product {0} was updated successfully".format(product[0]["product_name"])}), 200
+                            "Product {0} was updated successfully".format(product[0]["product_name"])})
 
     except:
         abort(500)
@@ -95,7 +95,7 @@ def delete_a_product(product_id):
 
     products.remove(product[0])
     return jsonify({"Deleted":
-                    "Product {0} was deleted successfully".format(product[0]["product_name"])}), 200
+                    "Product {0} was deleted successfully".format(product[0]["product_name"])})
 
 
 @app.route('/store-manager/api/v1/admin/sales', methods=['POST'])
@@ -124,7 +124,7 @@ def add_sales():
 
 @app.route('/store-manager/api/v1/admin/sales', methods=['GET'])
 def get_all_records():
-    return jsonify({"Sales": sales}), 200
+    return jsonify({"Sales": sales})
 
 
 @app.route('/store-manager/api/v1/admin/sales/<int:sale_id>', methods=['GET'])
@@ -135,7 +135,7 @@ def view_one_record(sale_id):
     if len(sale) == 0:
         abort(404)
 
-    return jsonify({"Sale": sale[0]}), 200
+    return jsonify({"Sale": sale[0]})
 
 
 if __name__ == '__main__':
