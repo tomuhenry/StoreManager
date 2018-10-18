@@ -5,7 +5,6 @@ time = str(datetime.now())
 
 products = [{
             "product_id": 1,
-            "product_category": "drinks",
             "product_name": "wine",
             "product_specs": "700ml",
             "product_stock": 15,
@@ -13,7 +12,6 @@ products = [{
         },
         {
             "product_id": 2,
-            "product_category": "foods",
             "product_name": "chicken",
             "product_specs": "1kg",
             "product_stock": 25,
@@ -32,32 +30,27 @@ sales = [{
 
 class Products:
 
-    def __init__(self, product_category, product_name, product_specs, product_stock, product_price):
-        self.product_category = product_category
+    def __init__(self, product_name, product_specs, product_stock, product_price):
         self.product_name = product_name
         self.product_specs = product_specs
         self.product_stock = product_stock
         self.product_price = product_price
 
     def add_product(self):
-        product = {
-            "product_id": products[-1]['product_id']+1,
-            "product_category": self.product_category,
+        new_product = {
             "product_name": self.product_name,
             "product_specs": self.product_specs,
             "product_stock": self.product_stock,
             "product_price": self.product_price,
         }
 
-        if product in products or [product for product in products
-                                   if product["product_category"] == self.product_category and
-                                   product["product_name"] == self.product_name and product["product_specs"] == self.product_specs and
-                                   product["product_stock"] == self.product_stock and product["product_price"] == self.product_price]:
-
-            return False
+        for product in products:
+            if set(new_product.values()).issubset(product.values()):
+                return False
 
         else:
-            products.append(product)
+            new_product["product_id"] = products[-1]['product_id']+1
+            products.append(new_product)
             return True
 
 

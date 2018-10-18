@@ -27,14 +27,13 @@ def home():
 def add_product():
     data = request.json
 
-    product_category = data['product_category']
     product_name = data['product_name']
     product_specs = data['product_specs']
     product_stock = data['product_stock']
     product_price = data['product_price']
 
-    product_cls = Products(product_category, product_name,
-                           product_specs, product_stock, product_price)
+    product_cls = Products(product_name,product_specs,
+                           product_stock, product_price)
 
     if product_cls.add_product() is True:
         return jsonify({"Success": "The product has been added"})
@@ -109,13 +108,7 @@ def add_sales():
 
     sale_cls = Sales(product_id, sale_quantity, unit_price)
 
-    if type(sale_quantity) != int and type(unit_price) != int and type(product_id):
-        abort(400)
-
-    elif not data or data == "":
-        abort(400)
-
-    elif sale_cls.add_sale() is True:
+    if sale_cls.add_sale() is True:
         return jsonify({"Success": "The sale item has been added"})
 
     else:
