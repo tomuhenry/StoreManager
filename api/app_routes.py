@@ -3,7 +3,6 @@ from functions import Products, Sales, sales, products
 
 app = Flask(__name__)
 
-
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({'error': 'Not found'}), 404
