@@ -17,7 +17,7 @@ def type_error(error):
     return jsonify({'error': 'Wrong input type'})
 
 @app.errorhandler(ValueError)
-def type_error(error):
+def value_error(error):
     return jsonify({'error': 'Wrong Value detected'})
 
 
