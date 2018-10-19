@@ -57,14 +57,12 @@ def view_all_products():
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['GET'])
 def view_one_product(product_id):
-    product = [
-        product for product in products if product["product_id"] == product_id]
+    for product in products:
+        if product["product_id"] == product_id:
+            return jsonify({"Product": product})
 
-    if len(product) == 0:
-        abort(404)
-
-    return jsonify({"Product": product[0]})
-
+        else:
+            abort(404)   
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['PUT'])
 def edit_product(product_id):

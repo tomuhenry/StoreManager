@@ -44,13 +44,6 @@ class ProductsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"The product has been added", response.data)
 
-    def test_added_product_there(self):
-        self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",
-                                data=json.dumps(sample_product))
-        response = self.testclient.get('/store-manager/api/v1/admin/products/3')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b"500ml", response.data)
-
     def test_duplicate_product(self):
         self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",
                                         data=json.dumps(sample_product))
