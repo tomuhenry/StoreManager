@@ -40,8 +40,8 @@ class Products:
         new_product = {
             "product_name": self.product_name,
             "product_specs": self.product_specs,
-            "product_stock": self.product_stock,
-            "product_price": self.product_price,
+            "product_stock": int(self.product_stock),
+            "product_price": int(self.product_price),
         }
 
         for product in products:

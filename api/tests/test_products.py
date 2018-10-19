@@ -4,7 +4,6 @@ from api.endpoints.app import app
 from api.endpoints.functions import Sales, Products
 
 sample_product = {
-    "product_category": "drinks",
     "product_name": "water",
     "product_specs": "500ml",
     "product_stock": 425,
@@ -14,6 +13,19 @@ edit_product = {
 	"product_stock": 25,
     "product_price": 1200
 }
+missing_edit_product = {
+    "product_stock": "",
+    "product_price": 1200
+}
+
+wrong_sample_product = {
+    "product_name": "water",
+    "product_specs": "500ml",
+    "product_stock": "42m",
+    "product_price": 1000
+}
+
+
 
 
 class ProductsTestCase(TestCase):
@@ -53,6 +65,12 @@ class ProductsTestCase(TestCase):
         self.assertEquals(response.status_code, 500)
         self.assertIn(b"Server Error has occured, Check input", response.data)
 
+    def test_add_product_with_wrong_data_type(self):
+        response = self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",
+                                        data=json.dumps(wrong_sample_product))
+        self.assertRaises(ValueError)
+        self.assertIn(b"Wrong Value detected", response.data)
+
     def test_get_all_products(self):
         response = self.testclient.get('/store-manager/api/v1/admin/products')
         self.assertEqual(response.status_code, 200)
@@ -73,6 +91,12 @@ class ProductsTestCase(TestCase):
                                         data=json.dumps(edit_product))
         self.assertEquals(response.status_code, 200)
         self.assertIn(b"Updated", response.data)
+
+    def test_edit_with_missing_input(self):
+        response = self.testclient.put('/store-manager/api/v1/admin/products/1', content_type="application/json",
+                                        data=json.dumps(missing_edit_product))
+        self.assertEquals(response.status_code, 500)
+        self.assertIn(b"Server Error has occured", response.data)
 
     def test_edit_product_not_found(self):
         response = self.testclient.put('/store-manager/api/v1/admin/products/10', content_type="application/json",

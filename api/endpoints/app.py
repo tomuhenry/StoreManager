@@ -12,6 +12,14 @@ def not_found(error):
 def bad_request(error):
     return jsonify({'error': 'Invalid request/input'}), 400
 
+@app.errorhandler(TypeError)
+def type_error(error):
+    return jsonify({'error': 'Wrong input type'})
+
+@app.errorhandler(ValueError)
+def type_error(error):
+    return jsonify({'error': 'Wrong Value detected'})
+
 
 @app.errorhandler(500)
 def server_error(error):
