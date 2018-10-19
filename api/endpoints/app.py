@@ -28,6 +28,10 @@ def value_error(error):
 def server_error(error):
     return jsonify({'error': 'Server Error has occured, Check input'}), 500
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({"Welcome":"Welcome to the Store Manager API by tomuhenry"})
+
 
 @app.route('/store-manager/api/v1/')
 def home():
