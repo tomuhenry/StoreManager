@@ -3,6 +3,7 @@ from api.endpoints.functions import Products, Sales, sales, products
 
 app = Flask(__name__)
 
+
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({'error': 'Not found'}), 404
@@ -12,9 +13,11 @@ def not_found(error):
 def bad_request(error):
     return jsonify({'error': 'Invalid request/input'}), 400
 
+
 @app.errorhandler(TypeError)
 def type_error(error):
     return jsonify({'error': 'Wrong input type'})
+
 
 @app.errorhandler(ValueError)
 def value_error(error):
@@ -40,7 +43,7 @@ def add_product():
     product_stock = data['product_stock']
     product_price = data['product_price']
 
-    product_cls = Products(product_name,product_specs,
+    product_cls = Products(product_name, product_specs,
                            product_stock, product_price)
 
     if product_cls.add_product() is True:
@@ -57,12 +60,14 @@ def view_all_products():
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['GET'])
 def view_one_product(product_id):
-    for product in products:
-        if product["product_id"] == product_id:
-            return jsonify({"Product": product})
+    product = [
+        product for product in products if ('product_id', product_id) in product.items()]
+    
+    if len(product) is 0:
+         abort(404)
 
-        else:
-            abort(404)   
+    else:
+        return jsonify({"Product": product})
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['PUT'])
 def edit_product(product_id):
@@ -135,7 +140,3 @@ def view_one_record(sale_id):
         abort(404)
 
     return jsonify({"Sale": sale[0]})
-
-
-if __name__ == '__main__':
-    app.run(debug=True, port=8080)
