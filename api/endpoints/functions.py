@@ -27,6 +27,8 @@ sales = [{
             "date_sold": "2018-10-16 11:40:34"
         }]
 
+users = []
+
 
 class Products:
 
@@ -85,3 +87,33 @@ class Sales:
             }
             sales.append(sale)
             return True
+
+class Users:
+
+    def __init__(self, email, name, password, rights):
+        self.email = email
+        self.name = name
+        self.password = password
+        self.rights = rights
+
+    def add_user(self):
+        if len(users) is 0:
+            user_id = 1
+            return user_id
+        else:
+            user_id = users[-1]['user_id']+1
+            return user_id
+
+        user = {
+                'user_id': user_id,
+                'email': self.email,
+                'name': self.name,
+                'passowrd': self.password,
+                'rights': self.rights
+            }
+        users.append(user)
+        return users
+
+    # def user_login(self):
+    #     for user in users:
+
