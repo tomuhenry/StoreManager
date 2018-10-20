@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, json, request, abort, session
+from flask import Flask, jsonify, json, request, abort, redirect
 from api.endpoints.functions import Products, Sales, sales, products
 
 app = Flask(__name__)
@@ -31,7 +31,7 @@ def server_error(error):
 
 @app.route('/', methods=['GET'])
 def index():
-    return jsonify({"Welcome": "Welcome to the Store Manager API by tomuhenry"})
+    return redirect('https://documenter.getpostman.com/view/5104454/RWguwcNw#70c9b6ab-cee2-4113-8c07-fee58c06e00b', code=302, Response=None)
 
 
 @app.route('/store-manager/api/v1/')
