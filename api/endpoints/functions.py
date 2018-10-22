@@ -1,32 +1,11 @@
 from flask import jsonify, abort
 from datetime import datetime
+import re
 
 time = str(datetime.now())
 
-products = [{
-            "product_id": 1,
-            "product_name": "wine",
-            "product_specs": "700ml",
-            "product_stock": 15,
-            "product_price": 15000
-        },
-        {
-            "product_id": 2,
-            "product_name": "chicken",
-            "product_specs": "1kg",
-            "product_stock": 25,
-            "product_price": 11000
-        }]
-
-sales = [{
-            "sale_id": 1,
-            "product_id": 1,
-            "sale_quantity": 3,
-            "unit_price": 15000,
-            "sale_price": 45000,
-            "date_sold": "2018-10-16 11:40:34"
-        }]
-
+products =[]
+sales = []
 users = []
 
 
@@ -51,8 +30,14 @@ class Products:
                 return False
 
         else:
-            new_product["product_id"] = products[-1]['product_id']+1
             products.append(new_product)
+
+            if len(products) is 1:
+                products[0]['product_id'] = 1
+
+            else:
+                products[-1]["product_id"] = products[-2]['product_id']+1
+            
             return True
 
 
@@ -78,7 +63,6 @@ class Sales:
                 self.sale_quantity
 
             sale = {
-                "sale_id": sales[-1]["sale_id"]+1,
                 "product_id": self.product_id,
                 "sale_quantity": self.sale_quantity,
                 "unit_price": self.unit_price,
@@ -86,7 +70,14 @@ class Sales:
                 "date_sold": time
             }
             sales.append(sale)
+            if len(sales) is 1:
+                sales[0]['sale_id'] = 1
+
+            else:
+                sales[-1]["sale_id"] = sales[-2]["sale_id"]+1
+                
             return True
+
 
 class Users:
 
@@ -96,24 +87,38 @@ class Users:
         self.password = password
         self.rights = rights
 
-    def add_user(self):
-        if len(users) is 0:
-            user_id = 1
-            return user_id
-        else:
-            user_id = users[-1]['user_id']+1
-            return user_id
+    def validate_email(self):
+        in_email = re.match(
+            r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", self.email)
 
-        user = {
-                'user_id': user_id,
-                'email': self.email,
-                'name': self.name,
-                'passowrd': self.password,
-                'rights': self.rights
-            }
-        users.append(user)
-        return users
+        if len(self.email) < 7 or in_email is None:
+            return False
+
+        else:
+            return True
+
+    def check_duplicate(self):
+        for user in users:
+            if (self.email in user.values()):
+                return False
+
+    def add_user(self):
+
+        new_user = {
+        'email': self.email,
+        'name': self.name,
+        'password': self.password,
+        'rights': self.rights
+        }
+        
+        users.append(new_user)
+
+        if len(users) is 1:
+            users[0]['user_id'] = 1
+
+        else:
+            users[-1]['user_id'] = users[-2]['user_id']+1
+
 
     # def user_login(self):
     #     for user in users:
-

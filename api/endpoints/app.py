@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, json, request, abort, redirect
-from api.endpoints.functions import Products, Sales, sales, products
+from api.endpoints.functions import Products, Sales, sales, products, Users, users
 
 app = Flask(__name__)
 
@@ -31,13 +31,41 @@ def server_error(error):
 
 @app.route('/', methods=['GET'])
 def index():
-    return redirect('https://documenter.getpostman.com/view/5104454/RWguwcNw#70c9b6ab-cee2-4113-8c07-fee58c06e00b', code=302, Response=None)
-
-
-@app.route('/store-manager/api/v1/')
-def home():
     return jsonify({"Welcome": "Welcome to the Store manager api"})
 
+@app.route('/store-manager/api/v1', methods=['POST'])
+def register_user():
+    data = request.json
+
+    email = data['email']
+    name = data['name']
+    password = data['password']
+    rights = data['rights']
+
+    user_cls = Users(email, name, password, rights)
+
+    if user_cls.validate_email() is False:
+        return jsonify({"Error":"Invalid email"})
+
+    if user_cls.check_duplicate() is False:
+        return jsonify({"Failed":"User with email '{0}' already exists".format(email)})
+
+    user_cls.add_user()
+    return jsonify({"Success":"User with name '{0}' has been added".format(name)}) 
+
+    
+@app.route('/store-manager/api/v1', methods=['GET'])
+def get_all_users():
+    return jsonify({"Users": users})
+
+@app.route('/store-manager/api/v1/<int:user_id>', methods=['GET'])
+def get_user_by_id(user_id):
+    user = [user for user in users if user_id in user.values()]
+    if len(user) == 0:
+        return jsonify({"Not Found":"No user with ID '{0}' in the database".format(user_id)})
+    
+    else:
+        return jsonify({"User":user})
 
 @app.route('/store-manager/api/v1/admin/products', methods=['POST'])
 def add_product():
