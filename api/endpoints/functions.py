@@ -120,5 +120,10 @@ class Users:
             users[-1]['user_id'] = users[-2]['user_id']+1
 
 
-    # def user_login(self):
-    #     for user in users:
+    def user_login(self):
+        for user in users:
+            if self.email in user.values() and self.password in user.values():
+                return True
+
+            else:
+                return False

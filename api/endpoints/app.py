@@ -33,7 +33,7 @@ def server_error(error):
 def index():
     return jsonify({"Welcome": "Welcome to the Store manager api"})
 
-@app.route('/store-manager/api/v1', methods=['POST'])
+@app.route('/store-manager/api/v1/signup', methods=['POST'])
 def register_user():
     data = request.json
 
@@ -53,12 +53,28 @@ def register_user():
     user_cls.add_user()
     return jsonify({"Success":"User with name '{0}' has been added".format(name)}) 
 
+@app.route('/store-manager/api/v1/login', methods=['POST'])
+def user_login():
+    data = request.json
+
+    email = data['email']
+    password = data['password']
     
-@app.route('/store-manager/api/v1', methods=['GET'])
+    user_cls = Users(email," name", password, "rights")
+
+    if user_cls.user_login() is True:
+        return jsonify({"Success":"User Logged in successfuly"}), 200
+
+    else:
+        return jsonify({"Failure":"Wrong login information"})
+
+    
+    
+@app.route('/store-manager/api/v1/users', methods=['GET'])
 def get_all_users():
     return jsonify({"Users": users})
 
-@app.route('/store-manager/api/v1/<int:user_id>', methods=['GET'])
+@app.route('/store-manager/api/v1/users/<int:user_id>', methods=['GET'])
 def get_user_by_id(user_id):
     user = [user for user in users if user_id in user.values()]
     if len(user) == 0:
