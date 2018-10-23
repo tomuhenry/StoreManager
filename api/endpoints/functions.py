@@ -43,35 +43,21 @@ class Sales:
         self.unit_price = unit_price
 
     def add_sale(self):
-        product = [
-            product for product in products if product["product_id"] == self.product_id]
 
-        if len(product) is 0:
-            abort(500)
+        sale = {
+            "product_id": self.product_id,
+            "sale_quantity": self.sale_quantity,
+            "unit_price": self.unit_price,
+            "sale_price": self.unit_price * self.sale_quantity,
+            "date_sold": time
+        }
+        sales.append(sale)
+        if len(sales) > 1:
+            sales[-1]["sale_id"] = sales[-2]["sale_id"]+1
 
-        "reduce the numer of items in the product list by sold items"
-        if self.sale_quantity > product[0]["product_stock"]:
-            return False
-
-        else:
-            product[0]["product_stock"] = product[0]["product_stock"] - \
-                self.sale_quantity
-
-            sale = {
-                "product_id": self.product_id,
-                "sale_quantity": self.sale_quantity,
-                "unit_price": self.unit_price,
-                "sale_price": self.unit_price * self.sale_quantity,
-                "date_sold": time
-            }
-            sales.append(sale)
-            if len(sales) is 1:
-                sales[0]['sale_id'] = 1
-
-            else:
-                sales[-1]["sale_id"] = sales[-2]["sale_id"]+1
-                
-            return True
+        elif len(sales) == 1:
+            sales[0]['sale_id'] = 1
+            
 
 
 class Users:
@@ -108,10 +94,10 @@ class Users:
         
         users.append(new_user)
 
-        if len(users) is 1:
+        if len(users) == 1:
             users[0]['user_id'] = 1
 
-        else:
+        elif len(users) > 1:
             users[-1]['user_id'] = users[-2]['user_id']+1
 
 

@@ -167,13 +167,19 @@ def add_sales():
     sale_quantity = data['sale_quantity']
     unit_price = data['sale_price']
 
+    product = [
+            product for product in products if product["product_id"] == product_id]
+
     sale_cls = Sales(product_id, sale_quantity, unit_price)
 
-    if sale_cls.add_sale() is True:
-        return jsonify({"Success": "The sale item has been added"})
+    if sale_quantity > product[0]["product_stock"]:
+            return jsonify({"Out of Stock": "Sorry, Not enough items in stock"})
 
-    else:
-        return jsonify({"Out of Stock": "Sorry, Not enough items in stock"})
+    else: 
+        product[0]["product_stock"]  -= sale_quantity
+
+    sale_cls.add_sale()
+    return jsonify({"Success": "The sale item has been added"})
 
 
 @app.route('/store-manager/api/v1/admin/sales', methods=['GET'])
