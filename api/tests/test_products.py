@@ -93,14 +93,14 @@ class ProductsTestCase(TestCase):
                                 data=json.dumps(sample_product))
         response = self.testclient.put('/store-manager/api/v1/admin/products/1', content_type="application/json",
                                         data=json.dumps(missing_edit_product))
-        self.assertEquals(response.status_code, 500)
-        self.assertIn(b"Server Error has occured", response.data)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn(b"Wrong Value detected", response.data)
 
     def test_edit_product_not_found(self):
         response = self.testclient.put('/store-manager/api/v1/admin/products/10', content_type="application/json",
                                         data=json.dumps(edit_product))
-        self.assertEquals(response.status_code, 500)
-        self.assertIn(b"Server Error", response.data)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn(b"There is not product with ID '10' in the system", response.data)
         
     def test_edit_product_wrongly(self):
         self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",

@@ -25,20 +25,15 @@ class Products:
             "product_price": int(self.product_price),
         }
 
-        for product in products:
-            if set(new_product.values()).issubset(product.values()):
-                return False
+        products.append(new_product)
+
+        if len(products) is 1:
+            products[0]['product_id'] = 1
 
         else:
-            products.append(new_product)
-
-            if len(products) is 1:
-                products[0]['product_id'] = 1
-
-            else:
-                products[-1]["product_id"] = products[-2]['product_id']+1
-            
-            return True
+            products[-1]["product_id"] = products[-2]['product_id']+1
+        
+        return True
 
 
 class Sales:

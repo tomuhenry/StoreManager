@@ -95,11 +95,15 @@ def add_product():
     product_cls = Products(product_name, product_specs,
                            product_stock, product_price)
 
-    if product_cls.add_product() is True:
-        return jsonify({"Success": "The product has been added"})
+    prod_values = [product_name, product_price, product_specs, product_stock]
 
-    else:
-        return jsonify({"Duplicate": "The product already exits"})
+    dup_product = [product for product in products if set(prod_values).issubset(product.values())]
+
+    if len(dup_product) > 0:
+        return jsonify({"Duplicate": "The product already exits"})  
+
+    product_cls.add_product()
+    return jsonify({"Success": "The product has been added"})
 
 
 @app.route('/store-manager/api/v1/admin/products', methods=['GET'])
@@ -123,26 +127,22 @@ def view_one_product(product_id):
 def edit_product(product_id):
     data = request.json
 
-    try:
+    product_stock = int(data['product_stock'])
+    product_price = int(data['product_price'])
 
-        product_stock = int(data['product_stock'])
-        product_price = int(data['product_price'])
+    product = [
+        product for product in products if product["product_id"] == product_id]
 
-        product = [
-            product for product in products if product["product_id"] == product_id]
+    if len(product) == 0:
+        return jsonify ({"Unknown":"There is not product with ID '{0}' in the system ".format(product_id)})
 
-        if len(product) == 0:
-            abort(500)
+    else:
+        product[0]["product_stock"] = product_stock
+        product[0]["product_price"] = product_price
 
-        else:
-            product[0]["product_stock"] = product_stock
-            product[0]["product_price"] = product_price
+        return jsonify({"Updated":
+                        "Product {0} was updated successfully".format(product[0]["product_name"])})
 
-            return jsonify({"Updated":
-                            "Product {0} was updated successfully".format(product[0]["product_name"])})
-
-    except:
-        abort(500)
 
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['DELETE'])
