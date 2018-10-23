@@ -8,7 +8,6 @@ install:
 
 script:
   - py.test --cov api/tests
-  - py.test --cov-report= --cov api/tests/
 
 after_success:
   - coveralls
