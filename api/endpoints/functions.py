@@ -4,7 +4,7 @@ import re
 
 time = str(datetime.now())
 
-products =[]
+products = []
 sales = []
 users = []
 
@@ -32,23 +32,23 @@ class Products:
 
         else:
             products[-1]["product_id"] = products[-2]['product_id']+1
-        
+
         return True
 
 
 class Sales:
-    def __init__(self, product_id, sale_quantity, unit_price):
+    def __init__(self, product_id, sale_quantity, product_price):
         self.product_id = product_id
         self.sale_quantity = sale_quantity
-        self.unit_price = unit_price
+        self.product_price = product_price
 
     def add_sale(self):
 
         sale = {
             "product_id": self.product_id,
             "sale_quantity": self.sale_quantity,
-            "unit_price": self.unit_price,
-            "sale_price": self.unit_price * self.sale_quantity,
+            "product_price": self.product_price,
+            "sale_price": self.product_price * self.sale_quantity,
             "date_sold": time
         }
         sales.append(sale)
@@ -57,7 +57,6 @@ class Sales:
 
         elif len(sales) == 1:
             sales[0]['sale_id'] = 1
-            
 
 
 class Users:
@@ -86,12 +85,12 @@ class Users:
     def add_user(self):
 
         new_user = {
-        'email': self.email,
-        'name': self.name,
-        'password': self.password,
-        'rights': self.rights
+            'email': self.email,
+            'name': self.name,
+            'password': self.password,
+            'rights': self.rights
         }
-        
+
         users.append(new_user)
 
         if len(users) == 1:
@@ -99,7 +98,6 @@ class Users:
 
         elif len(users) > 1:
             users[-1]['user_id'] = users[-2]['user_id']+1
-
 
     def user_login(self):
         for user in users:

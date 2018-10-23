@@ -5,21 +5,20 @@ from api.tests.test_products import sample_product
 
 sample_sale = {
     "product_id": 1,
-    "sale_quantity": 25,
-    "sale_price": 1500
+    "sale_quantity": 25
 }
 sample_sale2 = {
     "product_id": 1,
-    "sale_quantity": 45,
-    "sale_price": 1500
+    "sale_quantity": 45
 }
 
+
 class SalesTestCase(TestCase):
-    
+
     def setUp(self):
         self.testclient = app.test_client()
         self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",
-                                data=json.dumps(sample_product))
+                             data=json.dumps(sample_product))
 
     def test_add_sale(self):
         response = self.testclient.post('/store-manager/api/v1/user/sales', content_type="application/json",
@@ -35,10 +34,9 @@ class SalesTestCase(TestCase):
 
     def test_invalid_sale_report_input_type(self):
         response = self.testclient.post('/store-manager/api/v1/user/sales', content_type="application/json",
-                                data=json.dumps({
-                                    "product_id": 1,
-                                    "sale_quantity": "25",
-                                    "sale_price": "1500"}))
+                                        data=json.dumps({
+                                            "product_id": 1,
+                                            "sale_quantity": "25"}))
         self.assertRaises(TypeError)
         self.assertIn(b"Wrong input type", response.data)
 
@@ -46,10 +44,9 @@ class SalesTestCase(TestCase):
         response = self.testclient.post('/store-manager/api/v1/user/sales', content_type="application/json",
                                         data=json.dumps({
                                             "product_id": "2t",
-                                            "sale_quantity": 25,
-                                            "sale_price": 1500}))
-        self.assertEqual(response.status_code, 500)
-        self.assertIn(b"Server Error has occured", response.data)
+                                            "sale_quantity": 25}))
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(b"Not found", response.data)
 
     def test_get_all_sales(self):
         response = self.testclient.get('/store-manager/api/v1/admin/sales')
@@ -58,7 +55,7 @@ class SalesTestCase(TestCase):
 
     def test_get_specific_sale(self):
         self.testclient.post('/store-manager/api/v1/admin/sales', content_type="application/json",
-                                    data=json.dumps(sample_sale))
+                             data=json.dumps(sample_sale))
         response = self.testclient.get('/store-manager/api/v1/admin/sales/1')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Sale", response.data)
@@ -67,4 +64,3 @@ class SalesTestCase(TestCase):
         response = self.testclient.get('/store-manager/api/v1/admin/sales/10')
         self.assertEqual(response.status_code, 404)
         self.assertIn(b"Not found", response.data)
-    

@@ -33,6 +33,7 @@ def server_error(error):
 def index():
     return jsonify({"Welcome": "Welcome to the Store manager api"})
 
+
 @app.route('/store-manager/api/v1/signup', methods=['POST'])
 def register_user():
     data = request.json
@@ -45,13 +46,14 @@ def register_user():
     user_cls = Users(email, name, password, rights)
 
     if user_cls.validate_email() is False:
-        return jsonify({"Error":"Invalid email"})
+        return jsonify({"Error": "Invalid email"})
 
     if user_cls.check_duplicate() is False:
-        return jsonify({"Failed":"User with email '{0}' already exists".format(email)})
+        return jsonify({"Failed": "User with email '{0}' already exists".format(email)})
 
     user_cls.add_user()
-    return jsonify({"Success":"User with name '{0}' has been added".format(name)}) 
+    return jsonify({"Success": "User with name '{0}' has been added".format(name)})
+
 
 @app.route('/store-manager/api/v1/login', methods=['POST'])
 def user_login():
@@ -59,29 +61,30 @@ def user_login():
 
     email = data['email']
     password = data['password']
-    
-    user_cls = Users(email," name", password, "rights")
+
+    user_cls = Users(email, " name", password, "rights")
 
     if user_cls.user_login() is True:
-        return jsonify({"Success":"User Logged in successfuly"}), 200
+        return jsonify({"Success": "User Logged in successfuly"}), 200
 
     else:
-        return jsonify({"Failure":"Wrong login information"})
+        return jsonify({"Failure": "Wrong login information"})
 
-    
-    
+
 @app.route('/store-manager/api/v1/users', methods=['GET'])
 def get_all_users():
     return jsonify({"Users": users})
+
 
 @app.route('/store-manager/api/v1/users/<int:user_id>', methods=['GET'])
 def get_user_by_id(user_id):
     user = [user for user in users if user_id in user.values()]
     if len(user) == 0:
-        return jsonify({"Not Found":"No user with ID '{0}' in the database".format(user_id)})
-    
+        return jsonify({"Not Found": "No user with ID '{0}' in the database".format(user_id)})
+
     else:
-        return jsonify({"User":user})
+        return jsonify({"User": user})
+
 
 @app.route('/store-manager/api/v1/admin/products', methods=['POST'])
 def add_product():
@@ -97,10 +100,11 @@ def add_product():
 
     prod_values = [product_name, product_price, product_specs, product_stock]
 
-    dup_product = [product for product in products if set(prod_values).issubset(product.values())]
+    dup_product = [product for product in products if set(
+        prod_values).issubset(product.values())]
 
     if len(dup_product) > 0:
-        return jsonify({"Duplicate": "The product already exits"})  
+        return jsonify({"Duplicate": "The product already exits"})
 
     product_cls.add_product()
     return jsonify({"Success": "The product has been added"})
@@ -134,7 +138,7 @@ def edit_product(product_id):
         product for product in products if product["product_id"] == product_id]
 
     if len(product) == 0:
-        return jsonify ({"Unknown":"There is not product with ID '{0}' in the system ".format(product_id)})
+        return jsonify({"Unknown": "There is not product with ID '{0}' in the system ".format(product_id)})
 
     else:
         product[0]["product_stock"] = product_stock
@@ -142,7 +146,6 @@ def edit_product(product_id):
 
         return jsonify({"Updated":
                         "Product {0} was updated successfully".format(product[0]["product_name"])})
-
 
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['DELETE'])
@@ -165,18 +168,22 @@ def add_sales():
 
     product_id = data['product_id']
     sale_quantity = data['sale_quantity']
-    unit_price = data['sale_price']
 
     product = [
-            product for product in products if product["product_id"] == product_id]
+        product for product in products if product["product_id"] == product_id]
 
-    sale_cls = Sales(product_id, sale_quantity, unit_price)
+    if len(product) < 1:
+        abort(404)
+
+    product_price = product[0]['product_price']
+
+    sale_cls = Sales(product_id, sale_quantity, product_price)
 
     if sale_quantity > product[0]["product_stock"]:
-            return jsonify({"Out of Stock": "Sorry, Not enough items in stock"})
+        return jsonify({"Out of Stock": "Sorry, Not enough items in stock"})
 
-    else: 
-        product[0]["product_stock"]  -= sale_quantity
+    else:
+        product[0]["product_stock"] -= sale_quantity
 
     sale_cls.add_sale()
     return jsonify({"Success": "The sale item has been added"})

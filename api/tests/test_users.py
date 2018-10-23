@@ -4,23 +4,23 @@ from api.endpoints.app import app
 from api.endpoints.functions import users
 
 sample_user = {
-        'email': 'john@doe.com',
-        'name': 'John Doe',
-        'password': 'password',
-        'rights': "Admin"
-    }
+    'email': 'john@doe.com',
+    'name': 'John Doe',
+    'password': 'password',
+    'rights': "Admin"
+}
 
 invalid_email_signup = {
-        'email': 'johndoe.com',
-        'name': 'John Doe',
-        'password': 'password',
-        'rights': "Admin"
-    }
+    'email': 'johndoe.com',
+    'name': 'John Doe',
+    'password': 'password',
+    'rights': "Admin"
+}
 
 sample_login = {
-        'email': 'john@doe.com',
-        'password': 'password'
-    }
+    'email': 'john@doe.com',
+    'password': 'password'
+}
 
 
 class SalesTestCase(TestCase):
@@ -43,7 +43,7 @@ class SalesTestCase(TestCase):
 
     def test_duplicate_user(self):
         self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
-                                        data=json.dumps(sample_user))
+                             data=json.dumps(sample_user))
         response = self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
                                         data=json.dumps(sample_user))
         self.assertEqual(response.status_code, 200)
@@ -51,7 +51,7 @@ class SalesTestCase(TestCase):
 
     def test_user_login(self):
         self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
-                                        data=json.dumps(sample_user))
+                             data=json.dumps(sample_user))
         response = self.testclient.post('/store-manager/api/v1/login', content_type="application/json",
                                         data=json.dumps(sample_login))
         self.assertEqual(response.status_code, 200)
@@ -59,9 +59,9 @@ class SalesTestCase(TestCase):
 
     def test_wrong_login(self):
         self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
-                                        data=json.dumps(sample_user))
+                             data=json.dumps(sample_user))
         response = self.testclient.post('/store-manager/api/v1/login', content_type="application/json",
-                                        data=json.dumps({'email': 'some@email.com','password': 'badpassword'}))
+                                        data=json.dumps({'email': 'some@email.com', 'password': 'badpassword'}))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Wrong login information", response.data)
 
@@ -72,18 +72,17 @@ class SalesTestCase(TestCase):
 
     def test_get_user_by_id(self):
         self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
-                                        data=json.dumps(sample_user))
+                             data=json.dumps(sample_user))
         response = self.testclient.get('/store-manager/api/v1/users/1')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"User", response.data)
 
     def test_get_user_not_found(self):
         self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
-                                        data=json.dumps(sample_user))
+                             data=json.dumps(sample_user))
         response = self.testclient.get('/store-manager/api/v1/users/10')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"No user with ID '10' in the database", response.data)
-
 
     def tearDown(self):
         self.users.clear()
