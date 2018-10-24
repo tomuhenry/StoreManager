@@ -10,6 +10,13 @@ sample_user = {
     'rights': "Admin"
 }
 
+sample_user_missing= {
+    'email': '',
+    'name': '',
+    'password': 'password',
+    'rights': "Admin"
+}
+
 invalid_email_signup = {
     'email': 'johndoe.com',
     'name': 'John Doe',
@@ -34,6 +41,12 @@ class SalesTestCase(TestCase):
                                         data=json.dumps(sample_user))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Success", response.data)
+
+    def test_user_signup_missing_info(self):
+        response = self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
+                                        data=json.dumps(sample_user_missing))
+        self.assertEquals(response.status_code, 400)
+        self.assertIn(b"Invalid request/input", response.data)
 
     def test_invalid_email(self):
         response = self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
@@ -64,6 +77,14 @@ class SalesTestCase(TestCase):
                                         data=json.dumps({'email': 'some@email.com', 'password': 'badpassword'}))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Wrong login information", response.data)
+
+    def test_no_login_values(self):
+        self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
+                             data=json.dumps(sample_user))
+        response = self.testclient.post('/store-manager/api/v1/login', content_type="application/json",
+                                        data=json.dumps({'email': '', 'password': ''}))
+        self.assertEquals(response.status_code, 400)
+        self.assertIn(b"Invalid request/input", response.data)
 
     def test_get_all_users(self):
         response = self.testclient.get('/store-manager/api/v1/users')

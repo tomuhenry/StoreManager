@@ -54,14 +54,21 @@ class ProductsTestCase(TestCase):
     def test_add_product_wrongly(self):
         response = self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",
                                         data=json.dumps(edit_product))
-        self.assertEquals(response.status_code, 500)
-        self.assertIn(b"Server Error has occured, Check input", response.data)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn(b"A key error has been detected,", response.data)
+
+    def test_add_product_missing_values(self):
+        response = self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",
+                                        data=json.dumps({"product_name": "","product_specs": "",
+                                        "product_stock": 25,"product_price": 1000}))
+        self.assertEquals(response.status_code, 400)
+        self.assertIn(b"Invalid request/input", response.data)
 
     def test_add_product_with_wrong_data_type(self):
         response = self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",
                                         data=json.dumps(wrong_sample_product))
         self.assertRaises(ValueError)
-        self.assertIn(b"Wrong Value detected", response.data)
+        self.assertIn(b"Wrong Value in the input", response.data)
 
     def test_get_all_products(self):
         response = self.testclient.get('/store-manager/api/v1/admin/products')
@@ -96,7 +103,7 @@ class ProductsTestCase(TestCase):
         response = self.testclient.put('/store-manager/api/v1/admin/products/1', content_type="application/json",
                                        data=json.dumps(missing_edit_product))
         self.assertEquals(response.status_code, 200)
-        self.assertIn(b"Wrong Value detected", response.data)
+        self.assertIn(b"Wrong Value in the input", response.data)
 
     def test_edit_product_not_found(self):
         response = self.testclient.put('/store-manager/api/v1/admin/products/10', content_type="application/json",
@@ -110,8 +117,8 @@ class ProductsTestCase(TestCase):
                              data=json.dumps(sample_product))
         response = self.testclient.put('/store-manager/api/v1/admin/products/1', content_type="application/json",
                                        data=json.dumps({"product_price": 1200}))
-        self.assertEquals(response.status_code, 500)
-        self.assertIn(b"Server Error", response.data)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn(b"A key error has been detected,", response.data)
 
     def test_delete_product(self):
         self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",

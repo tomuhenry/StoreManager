@@ -1,8 +1,10 @@
-from flask import Flask, jsonify, json, request, abort, redirect
+from flask import Flask, jsonify, json, request, abort, redirect, Blueprint
 from api.endpoints.functions import Products, Sales, sales, products, Users, users
+import werkzeug.exceptions
 
 app = Flask(__name__)
 
+store = Blueprint('store', __name__)
 
 @app.errorhandler(404)
 def not_found(error):
@@ -21,12 +23,11 @@ def type_error(error):
 
 @app.errorhandler(ValueError)
 def value_error(error):
-    return jsonify({'error': 'Wrong Value detected'})
+    return jsonify({'error': 'Wrong Value in the input'})
 
-
-@app.errorhandler(500)
-def server_error(error):
-    return jsonify({'error': 'Server Error has occured, Check input'}), 500
+@app.errorhandler(KeyError)
+def key_error(error):
+    return jsonify({'error': 'A key error has been detected, check your inputs'})
 
 
 @app.route('/', methods=['GET'])
@@ -42,6 +43,9 @@ def register_user():
     name = data['name']
     password = data['password']
     rights = data['rights']
+
+    if not email or not name or not password or not rights:
+        abort(400)
 
     user_cls = Users(email, name, password, rights)
 
@@ -62,28 +66,31 @@ def user_login():
     email = data['email']
     password = data['password']
 
+    if not email or not password:
+        abort(400)
+
     user_cls = Users(email, " name", password, "rights")
 
     if user_cls.user_login() is True:
         return jsonify({"Success": "User Logged in successfuly"}), 200
 
     else:
-        return jsonify({"Failure": "Wrong login information"})
+        return jsonify({"Failure": "Wrong login information"}), 200
 
 
 @app.route('/store-manager/api/v1/users', methods=['GET'])
 def get_all_users():
-    return jsonify({"Users": users})
+    return jsonify({"Users": users}), 200
 
 
 @app.route('/store-manager/api/v1/users/<int:user_id>', methods=['GET'])
 def get_user_by_id(user_id):
     user = [user for user in users if user_id in user.values()]
     if len(user) == 0:
-        return jsonify({"Not Found": "No user with ID '{0}' in the database".format(user_id)})
+        return jsonify({"Not Found": "No user with ID '{0}' in the database".format(user_id)}), 200
 
     else:
-        return jsonify({"User": user})
+        return jsonify({"User": user}), 200
 
 
 @app.route('/store-manager/api/v1/admin/products', methods=['POST'])
@@ -94,6 +101,9 @@ def add_product():
     product_specs = data['product_specs']
     product_stock = data['product_stock']
     product_price = data['product_price']
+    
+    if not product_name or not product_price or not product_stock or not product_specs:
+        abort(400)
 
     product_cls = Products(product_name, product_specs,
                            product_stock, product_price)
@@ -104,15 +114,15 @@ def add_product():
         prod_values).issubset(product.values())]
 
     if len(dup_product) > 0:
-        return jsonify({"Duplicate": "The product already exits"})
+        return jsonify({"Duplicate": "The product already exits"}), 200
 
     product_cls.add_product()
-    return jsonify({"Success": "The product has been added"})
+    return jsonify({"Success": "The product has been added"}), 200
 
 
 @app.route('/store-manager/api/v1/admin/products', methods=['GET'])
 def view_all_products():
-    return jsonify({"Products": products})
+    return jsonify({"Products": products}), 200
 
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['GET'])
@@ -124,7 +134,7 @@ def view_one_product(product_id):
         abort(404)
 
     else:
-        return jsonify({"Product": product})
+        return jsonify({"Product": product}), 200
 
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['PUT'])
@@ -138,14 +148,14 @@ def edit_product(product_id):
         product for product in products if product["product_id"] == product_id]
 
     if len(product) == 0:
-        return jsonify({"Unknown": "There is not product with ID '{0}' in the system ".format(product_id)})
+        return jsonify({"Unknown": "There is not product with ID '{0}' in the system ".format(product_id)}), 200
 
     else:
         product[0]["product_stock"] = product_stock
         product[0]["product_price"] = product_price
 
         return jsonify({"Updated":
-                        "Product {0} was updated successfully".format(product[0]["product_name"])})
+                        "Product {0} was updated successfully".format(product[0]["product_name"])}), 200
 
 
 @app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['DELETE'])
