@@ -17,4 +17,18 @@
     .login-body{
         background-image: none;
     }
+
+    table, th, td{
+        border: 1px;
+        border-collapse: collapse;
+        padding: 5px;
+        margin: 0px; 
+        width: 400px;
+    }
+    
+    table{
+        margin-right: 0px;
+        background: #000000e7;
+    }
+    
 }
