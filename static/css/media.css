@@ -21,30 +21,5 @@
     table{
         width: auto;
     }
-
-	table, thead, tbody, th, td, tr {
-
-        text-align: left; 
-		display: block; 
-	}
-	
-	thead tr { 
-		position: absolute;
-		top: -9999px;
-		left: -9999px;
-	}
-	
-	tr {
-         border: 1px solid #ccc; 
-        
-    }
-	
-	td {
-		border: none;
-		border-bottom: 1px solid #ccc; 
-		position: relative;
-		padding-left: 50%; 
-	}
-    
     
 }
