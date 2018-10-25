@@ -6,26 +6,26 @@ app = Flask(__name__)
 
 store = Blueprint('store', __name__)
 
-@app.errorhandler(404)
+@store.errorhandler(404)
 def not_found(error):
     return jsonify({'error': 'Not found'}), 404
 
 
-@app.errorhandler(400)
+@store.errorhandler(400)
 def bad_request(error):
     return jsonify({'error': 'Invalid request/input'}), 400
 
 
-@app.errorhandler(TypeError)
+@store.errorhandler(TypeError)
 def type_error(error):
     return jsonify({'error': 'Wrong input type'})
 
 
-@app.errorhandler(ValueError)
+@store.errorhandler(ValueError)
 def value_error(error):
     return jsonify({'error': 'Wrong Value in the input'})
 
-@app.errorhandler(KeyError)
+@store.errorhandler(KeyError)
 def key_error(error):
     return jsonify({'error': 'A key error has been detected, check your inputs'})
 
@@ -35,7 +35,7 @@ def index():
     return jsonify({"Welcome": "Welcome to the Store manager api"})
 
 
-@app.route('/store-manager/api/v1/signup', methods=['POST'])
+@store.route('/signup', methods=['POST'])
 def register_user():
     data = request.json
 
@@ -50,16 +50,16 @@ def register_user():
     user_cls = Users(email, name, password, rights)
 
     if user_cls.validate_email() is False:
-        return jsonify({"Error": "Invalid email"})
+        return jsonify({"Error": "Invalid email"}), 200
 
     if user_cls.check_duplicate() is False:
-        return jsonify({"Failed": "User with email '{0}' already exists".format(email)})
+        return jsonify({"Failed": "User with email '{0}' already exists".format(email)}), 200
 
     user_cls.add_user()
-    return jsonify({"Success": "User with name '{0}' has been added".format(name)})
+    return jsonify({"Success": "User with name '{0}' has been added".format(name)}), 200
 
 
-@app.route('/store-manager/api/v1/login', methods=['POST'])
+@store.route('/login', methods=['POST'])
 def user_login():
     data = request.json
 
@@ -78,12 +78,12 @@ def user_login():
         return jsonify({"Failure": "Wrong login information"}), 200
 
 
-@app.route('/store-manager/api/v1/users', methods=['GET'])
+@store.route('/users', methods=['GET'])
 def get_all_users():
     return jsonify({"Users": users}), 200
 
 
-@app.route('/store-manager/api/v1/users/<int:user_id>', methods=['GET'])
+@store.route('/users/<int:user_id>', methods=['GET'])
 def get_user_by_id(user_id):
     user = [user for user in users if user_id in user.values()]
     if len(user) == 0:
@@ -93,7 +93,7 @@ def get_user_by_id(user_id):
         return jsonify({"User": user}), 200
 
 
-@app.route('/store-manager/api/v1/admin/products', methods=['POST'])
+@store.route('/admin/products', methods=['POST'])
 def add_product():
     data = request.json
 
@@ -120,12 +120,12 @@ def add_product():
     return jsonify({"Success": "The product has been added"}), 200
 
 
-@app.route('/store-manager/api/v1/admin/products', methods=['GET'])
+@store.route('/admin/products', methods=['GET'])
 def view_all_products():
     return jsonify({"Products": products}), 200
 
 
-@app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['GET'])
+@store.route('/admin/products/<int:product_id>', methods=['GET'])
 def view_one_product(product_id):
     product = [
         product for product in products if ('product_id', product_id) in product.items()]
@@ -137,7 +137,7 @@ def view_one_product(product_id):
         return jsonify({"Product": product}), 200
 
 
-@app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['PUT'])
+@store.route('/admin/products/<int:product_id>', methods=['PUT'])
 def edit_product(product_id):
     data = request.json
 
@@ -158,7 +158,7 @@ def edit_product(product_id):
                         "Product {0} was updated successfully".format(product[0]["product_name"])}), 200
 
 
-@app.route('/store-manager/api/v1/admin/products/<int:product_id>', methods=['DELETE'])
+@store.route('/admin/products/<int:product_id>', methods=['DELETE'])
 def delete_a_product(product_id):
     product = [
         product for product in products if product["product_id"] == product_id]
@@ -171,8 +171,8 @@ def delete_a_product(product_id):
                     "Product {0} was deleted successfully".format(product[0]["product_name"])})
 
 
-@app.route('/store-manager/api/v1/admin/sales', methods=['POST'])
-@app.route('/store-manager/api/v1/user/sales', methods=['POST'])
+@store.route('/admin/sales', methods=['POST'])
+@store.route('/user/sales', methods=['POST'])
 def add_sales():
     data = request.json
 
@@ -199,12 +199,12 @@ def add_sales():
     return jsonify({"Success": "The sale item has been added"})
 
 
-@app.route('/store-manager/api/v1/admin/sales', methods=['GET'])
+@store.route('/admin/sales', methods=['GET'])
 def get_all_records():
     return jsonify({"Sales": sales})
 
 
-@app.route('/store-manager/api/v1/admin/sales/<int:sale_id>', methods=['GET'])
+@store.route('/admin/sales/<int:sale_id>', methods=['GET'])
 def view_one_record(sale_id):
     sale = [
         sale for sale in sales if sale["sale_id"] == sale_id]
