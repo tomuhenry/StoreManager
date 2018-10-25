@@ -80,7 +80,7 @@ def user_login():
 
 @store.route('/users', methods=['GET'])
 def get_all_users():
-    return jsonify({"Users": users}), 200
+    return jsonify({"Users": users})
 
 
 @store.route('/users/<int:user_id>', methods=['GET'])
@@ -102,8 +102,9 @@ def add_product():
     product_stock = data['product_stock']
     product_price = data['product_price']
     
-    if not product_name or not product_price or not product_stock or not product_specs:
+    if product_name is "" or product_price is "" or not product_stock:
         abort(400)
+
 
     product_cls = Products(product_name, product_specs,
                            product_stock, product_price)
@@ -122,7 +123,7 @@ def add_product():
 
 @store.route('/admin/products', methods=['GET'])
 def view_all_products():
-    return jsonify({"Products": products}), 200
+    return jsonify({"Products": products})
 
 
 @store.route('/admin/products/<int:product_id>', methods=['GET'])
