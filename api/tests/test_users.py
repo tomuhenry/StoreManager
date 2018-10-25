@@ -1,7 +1,7 @@
 from unittest import TestCase
 from flask import json
-from api.endpoints.app import app
-from api.endpoints.functions import users
+from api.views.app import app
+from api.views.functions import users
 
 sample_user = {
     'email': 'john@doe.com',

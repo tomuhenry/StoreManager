@@ -1,6 +1,6 @@
 from unittest import TestCase
 from flask import json
-from api.endpoints.app import app
+from api.views.app import app
 from api.tests.test_products import sample_product
 
 sample_sale = {

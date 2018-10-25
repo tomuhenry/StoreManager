@@ -1,5 +1,5 @@
 from flask import Flask
-from api.endpoints.app import app
+from api.views.app import app
 
 
 if __name__ == '__main__':
