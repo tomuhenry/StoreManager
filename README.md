@@ -17,11 +17,14 @@ The Store Manager program helps in store management
 
 2. cd into the cloned repository from you local machine
 
-3. Setup a virtual environment using "virtualenv" or "venv" and activate it
+3. install requirements with command
+    > pip install -r requirements.txt
 
-3. use command "python run.py" from bash or cmd to run the application
+4. Setup a virtual environment using "virtualenv" or "venv" and activate it
 
-4. Download the Postman collection given below to test factionality
+5. use command "python run.py" from bash or cmd to run the application
+
+6. Download the Postman collection given below to test factionality
 
 ## Postman Collection
 > https://www.getpostman.com/collections/fa2c332ac45ad2020485
