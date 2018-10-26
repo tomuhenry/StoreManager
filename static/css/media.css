@@ -18,33 +18,17 @@
         background-image: none;
     }
 
-    table{
-        width: auto;
+    table, th, td{
+        border: 1px;
+        border-collapse: collapse;
+        padding: 5px;
+        margin: 0px; 
+        width: 400px;
     }
-
-	table, thead, tbody, th, td, tr {
-
-        text-align: left; 
-		display: block; 
-	}
-	
-	thead tr { 
-		position: absolute;
-		top: -9999px;
-		left: -9999px;
-	}
-	
-	tr {
-         border: 1px solid #ccc; 
-        
-    }
-	
-	td {
-		border: none;
-		border-bottom: 1px solid #ccc; 
-		position: relative;
-		padding-left: 50%; 
-	}
     
+    table{
+        margin-right: 0px;
+        background: #000000e7;
+    }
     
 }

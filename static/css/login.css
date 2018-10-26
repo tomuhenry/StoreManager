@@ -73,6 +73,7 @@ input[type="text"] {
 
 .flex-login a {
     line-height: 15px;
+    text-decoration: none;
     color: yellow;
 }
 

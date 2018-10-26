@@ -20,6 +20,12 @@ h1{
     color: #ffffff;
     text-shadow: 3px 3px 5px #000000;
 }
+h2{
+    margin: 5px;
+    padding: 5px;
+    text-align: center;
+    font-size: 25px;
+}
 
 #sidebar {
     position: fixed;
