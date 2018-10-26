@@ -55,7 +55,17 @@ def get_all_users():
 def get_user_by_id(user_id):
     user = [user for user in users if user_id in user.values()]
     if len(user) == 0:
-        return jsonify({"Not Found": "No user with ID '{0}' in the database".format(user_id)}), 200
+        return jsonify({"Not Found": "No user with ID '{0}' in the database".format(user_id)}), 404
 
     else:
         return jsonify({"User": user}), 200
+
+@userbp.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = [user for user in users if user['user_id'] == user_id]
+    if len(user) < 1:
+        return jsonify({"Alert": "User with ID '{0}' not in the list".format(user_id)}), 404
+
+    else:
+        users.remove(user[0])
+        return jsonify({"Deleted": "User '{0}' has been deleted".format(user[0]['name'])}), 200

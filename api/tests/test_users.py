@@ -109,8 +109,20 @@ class SalesTestCase(TestCase):
         self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
                              data=json.dumps(sample_user))
         response = self.testclient.get('/store-manager/api/v1/users/10')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 404)
         self.assertIn(b"No user with ID '10' in the database", response.data)
+
+    def test_delete(self):
+        self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
+                             data=json.dumps(sample_user))
+        response = self.testclient.delete('/store-manager/api/v1/users/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"User 'John Doe' has been deleted", response.data)
+
+    def test_delete_not_found(self):
+        response = self.testclient.delete('/store-manager/api/v1/users/1')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(b"User with ID '1' not in the list", response.data)
 
     def tearDown(self):
         self.users.clear()

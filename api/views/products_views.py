@@ -9,12 +9,11 @@ def add_product():
 
     product_name = data['product_name']
     product_specs = data['product_specs']
-    product_stock = data['product_stock']
-    product_price = data['product_price']
+    product_stock = int(data['product_stock'])
+    product_price = int(data['product_price'])
     
-    if product_name is "" or product_price is "" or not product_stock:
+    if not product_name or not product_price or not product_stock:
         abort(400)
-
 
     product_cls = Products(product_name, product_specs,
                            product_stock, product_price)
