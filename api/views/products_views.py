@@ -35,7 +35,7 @@ def view_all_products():
     return jsonify({"Products": products})
 
 
-@prod.route('/products/<int:product_id>', methods=['GET'])
+@prod.route('/products/<product_id>', methods=['GET'])
 def view_one_product(product_id):
     product = [
         product for product in products if ('product_id', product_id) in product.items()]
@@ -47,7 +47,7 @@ def view_one_product(product_id):
         return jsonify({"Product": product}), 200
 
 
-@prod.route('/products/<int:product_id>', methods=['PUT'])
+@prod.route('/products/<product_id>', methods=['PUT'])
 def edit_product(product_id):
     data = request.json
 
@@ -68,7 +68,7 @@ def edit_product(product_id):
                         "Product {0} was updated successfully".format(product[0]["product_name"])}), 200
 
 
-@prod.route('/products/<int:product_id>', methods=['DELETE'])
+@prod.route('/products/<product_id>', methods=['DELETE'])
 def delete_a_product(product_id):
     product = [
         product for product in products if product["product_id"] == product_id]

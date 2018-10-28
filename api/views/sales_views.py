@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, json, request, abort, Blueprint
+from flask import jsonify, request, abort, Blueprint
 from api.views.functions import products, Sales, sales
 
 salebp = Blueprint('salebp',__name__)
@@ -36,12 +36,20 @@ def get_all_records():
     return jsonify({"Sales": sales})
 
 
-@salebp.route('/admin/sales/<int:sale_id>', methods=['GET'])
+@salebp.route('/admin/sales/<sale_id>', methods=['GET'])
 def view_one_record(sale_id):
     sale = [
-        sale for sale in sales if sale["sale_id"] == sale_id]
+        sale for sale in sales if ('sale_id', sale_id) in sale.items()]
 
     if len(sale) == 0:
         abort(404)
 
-    return jsonify({"Sale": sale[0]})
+    else:
+        return jsonify({"Sale": sale}), 200
+    # sale = [
+    #     sale for sale in sales if sale_id in sale.values()]
+
+    # if len(sale) == 0 :
+    #     abort(404)
+
+    # return jsonify({"Sale": sale})

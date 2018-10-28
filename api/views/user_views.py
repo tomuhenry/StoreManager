@@ -1,7 +1,9 @@
-from flask import Flask, jsonify, json, request, abort, Blueprint
+from flask import jsonify, request, abort, Blueprint
 from api.views.functions import Users, users
+from werkzeug.security import generate_password_hash, check_password_hash
 
-userbp = Blueprint('userbp',__name__)
+userbp = Blueprint('userbp', __name__)
+
 
 @userbp.route('/signup', methods=['POST'])
 def register_user():
@@ -9,7 +11,7 @@ def register_user():
 
     email = data['email']
     name = data['name']
-    password = data['password']
+    password = generate_password_hash(data['password'], method='sha256')
     rights = data['rights']
 
     if not email or not name or not password or not rights:
@@ -37,12 +39,17 @@ def user_login():
     if not email or not password:
         abort(400)
 
-    user_cls = Users(email, " name", password, "rights")
+    user = [user for user in users if user['email'] == email]
 
-    if user_cls.user_login() is True:
+    if len(user) == 0:
+        return jsonify({"Failure": "Wrong login information"}), 200
+
+    compare_password = check_password_hash(user[0]['password'], password)
+
+    if compare_password is True:
         return jsonify({"Success": "User Logged in successfuly"}), 200
 
-    else:
+    elif compare_password is False:
         return jsonify({"Failure": "Wrong login information"}), 200
 
 
@@ -51,20 +58,21 @@ def get_all_users():
     return jsonify({"Users": users})
 
 
-@userbp.route('/users/<int:user_id>', methods=['GET'])
-def get_user_by_id(user_id):
-    user = [user for user in users if user_id in user.values()]
+@userbp.route('/users/<email>', methods=['GET'])
+def get_user_by_id(email):
+    user = [user for user in users if email in user.values()]
     if len(user) == 0:
-        return jsonify({"Not Found": "No user with ID '{0}' in the database".format(user_id)}), 404
+        return jsonify({"Not Found": "No user with email '{0}' in the database".format(email)}), 404
 
     else:
         return jsonify({"User": user}), 200
 
-@userbp.route('/users/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    user = [user for user in users if user['user_id'] == user_id]
+
+@userbp.route('/users/<email>', methods=['DELETE'])
+def delete_user(email):
+    user = [user for user in users if user['email'] == email]
     if len(user) < 1:
-        return jsonify({"Alert": "User with ID '{0}' not in the list".format(user_id)}), 404
+        return jsonify({"Alert": "User with email '{0}' not in the list".format(email)}), 404
 
     else:
         users.remove(user[0])

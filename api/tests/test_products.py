@@ -59,8 +59,8 @@ class ProductsTestCase(TestCase):
 
     def test_add_product_missing_values(self):
         response = self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",
-                                        data=json.dumps({"product_name": "","product_specs": "",
-                                        "product_stock": 25,"product_price": 1000}))
+                                        data=json.dumps({"product_name": "", "product_specs": "",
+                                                         "product_stock": 25, "product_price": 1000}))
         self.assertEquals(response.status_code, 400)
         self.assertIn(b"Invalid request/input", response.data)
 
@@ -79,7 +79,7 @@ class ProductsTestCase(TestCase):
         self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",
                              data=json.dumps(sample_product))
         response = self.testclient.get(
-            '/store-manager/api/v1/admin/products/1')
+            '/store-manager/api/v1/admin/products/{0}'.format(products[0]['product_id']))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Product", response.data)
 
@@ -92,7 +92,7 @@ class ProductsTestCase(TestCase):
     def test_edit_product(self):
         self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",
                              data=json.dumps(sample_product))
-        response = self.testclient.put('/store-manager/api/v1/admin/products/1', content_type="application/json",
+        response = self.testclient.put('/store-manager/api/v1/admin/products/{0}'.format(products[0]['product_id']), content_type="application/json",
                                        data=json.dumps(edit_product))
         self.assertEquals(response.status_code, 200)
         self.assertIn(b"Updated", response.data)
@@ -124,7 +124,7 @@ class ProductsTestCase(TestCase):
         self.testclient.post('/store-manager/api/v1/admin/products', content_type="application/json",
                              data=json.dumps(sample_product))
         response = self.testclient.delete(
-            '/store-manager/api/v1/admin/products/1')
+            '/store-manager/api/v1/admin/products/{0}'.format(products[0]['product_id']))
         self.assertEquals(response.status_code, 200)
         self.assertIn(b"Deleted", response.data)
 

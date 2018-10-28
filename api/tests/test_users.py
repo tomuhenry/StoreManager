@@ -76,11 +76,19 @@ class SalesTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"User Logged in successfuly", response.data)
 
-    def test_wrong_login(self):
+    def test_wrong_login_email(self):
         self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
                              data=json.dumps(sample_user))
         response = self.testclient.post('/store-manager/api/v1/login', content_type="application/json",
-                                        data=json.dumps({'email': 'some@email.com', 'password': 'badpassword'}))
+                                        data=json.dumps({'email': 'some@email.com', 'password': 'password'}))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Wrong login information", response.data)
+
+    def test_wrong_login_password(self):
+        self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
+                             data=json.dumps(sample_user))
+        response = self.testclient.post('/store-manager/api/v1/login', content_type="application/json",
+                                        data=json.dumps({'email': 'john@doe.com', 'password': 'badpassword'}))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Wrong login information", response.data)
 
@@ -97,10 +105,10 @@ class SalesTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Users", response.data)
 
-    def test_get_user_by_id(self):
+    def test_get_user_by_email(self):
         self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
                              data=json.dumps(sample_user))
-        response = self.testclient.get('/store-manager/api/v1/users/1')
+        response = self.testclient.get('/store-manager/api/v1/users/{0}'.format(users[0]['email']))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"user_id", response.data)
         self.assertEqual(users[0]['user_id'], 1)
@@ -108,21 +116,21 @@ class SalesTestCase(TestCase):
     def test_get_user_not_found(self):
         self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
                              data=json.dumps(sample_user))
-        response = self.testclient.get('/store-manager/api/v1/users/10')
+        response = self.testclient.get('/store-manager/api/v1/users/email')
         self.assertEqual(response.status_code, 404)
-        self.assertIn(b"No user with ID '10' in the database", response.data)
+        self.assertIn(b"No user with email 'email' in the database", response.data)
 
     def test_delete(self):
         self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",
                              data=json.dumps(sample_user))
-        response = self.testclient.delete('/store-manager/api/v1/users/1')
+        response = self.testclient.delete('/store-manager/api/v1/users/{0}'.format(users[0]['email']))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"User 'John Doe' has been deleted", response.data)
 
     def test_delete_not_found(self):
-        response = self.testclient.delete('/store-manager/api/v1/users/1')
+        response = self.testclient.delete('/store-manager/api/v1/users/email')
         self.assertEqual(response.status_code, 404)
-        self.assertIn(b"User with ID '1' not in the list", response.data)
+        self.assertIn(b"User with email 'email' not in the list", response.data)
 
     def tearDown(self):
         self.users.clear()

@@ -1,6 +1,6 @@
-from flask import jsonify, abort
 from datetime import datetime
 import re
+import uuid
 
 time = str(datetime.now())
 
@@ -19,6 +19,7 @@ class Products:
 
     def add_product(self):
         new_product = {
+            "product_id": str(uuid.uuid4()),
             "product_name": self.product_name,
             "product_specs": self.product_specs,
             "product_stock": int(self.product_stock),
@@ -26,14 +27,6 @@ class Products:
         }
 
         products.append(new_product)
-
-        if len(products) is 1:
-            products[0]['product_id'] = 1
-
-        else:
-            products[-1]["product_id"] = products[-2]['product_id']+1
-
-        return True
 
 
 class Sales:
@@ -45,6 +38,7 @@ class Sales:
     def add_sale(self):
 
         sale = {
+            "sale_id": str(uuid.uuid1()),
             "product_id": self.product_id,
             "sale_quantity": self.sale_quantity,
             "product_price": self.product_price,
@@ -52,11 +46,6 @@ class Sales:
             "date_sold": time
         }
         sales.append(sale)
-        if len(sales) > 1:
-            sales[-1]["sale_id"] = sales[-2]["sale_id"]+1
-
-        elif len(sales) == 1:
-            sales[0]['sale_id'] = 1
 
 
 class Users:
@@ -98,11 +87,3 @@ class Users:
 
         elif len(users) > 1:
             users[-1]['user_id'] = users[-2]['user_id']+1
-
-    def user_login(self):
-        for user in users:
-            if self.email in user.values() and self.password in user.values():
-                return True
-
-            else:
-                return False
