@@ -1,8 +1,21 @@
-from flask import jsonify, request, abort, Blueprint
+from flask import jsonify, request, abort, Blueprint, session
 from api.views.functions import Users, users
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 
 userbp = Blueprint('userbp', __name__)
+
+
+# Login required decorator
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            return jsonify({"Unauthorized":"You need to login first"})
+
+        return wrap
 
 
 @userbp.route('/signup', methods=['POST'])
@@ -29,29 +42,36 @@ def register_user():
     return jsonify({"Success": "User with name '{0}' has been added".format(name)}), 200
 
 
-@userbp.route('/login', methods=['POST'])
+@userbp.route('/login', methods=['POST', 'GET'])
 def user_login():
-    data = request.json
+    
+    if request.method == 'POST':
+        data = request.json
 
-    email = data['email']
-    password = data['password']
+        email = data['email']
+        password = data['password']
 
-    if not email or not password:
-        abort(400)
+        if not email or not password:
+            abort(400)
 
-    user = [user for user in users if user['email'] == email]
+        user = [user for user in users if user['email'] == email]
 
-    if len(user) == 0:
-        return jsonify({"Failure": "Wrong login information"}), 200
+        if len(user) == 0:
+            return jsonify({"Failure": "Wrong login information"}), 200
 
-    compare_password = check_password_hash(user[0]['password'], password)
+        compare_password = check_password_hash(user[0]['password'], password)
 
-    if compare_password is True:
-        return jsonify({"Success": "User Logged in successfuly"}), 200
+        if compare_password is True:
+            session['logged_in'] = True
+            return jsonify({"Success": "User Logged in successfuly"}), 200
 
-    elif compare_password is False:
-        return jsonify({"Failure": "Wrong login information"}), 200
+        elif compare_password is False:
+            return jsonify({"Failure": "Wrong login information"}), 200
 
+@userbp.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return jsonify({"Message": "You have logged out"})
 
 @userbp.route('/users', methods=['GET'])
 def get_all_users():

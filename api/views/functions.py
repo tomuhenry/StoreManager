@@ -38,7 +38,7 @@ class Sales:
     def add_sale(self):
 
         sale = {
-            "sale_id": str(uuid.uuid1()),
+            "sale_id": str(uuid.uuid4()),
             "product_id": self.product_id,
             "sale_quantity": self.sale_quantity,
             "product_price": self.product_price,
@@ -74,6 +74,7 @@ class Users:
     def add_user(self):
 
         new_user = {
+            'user_id': str(uuid.uuid1()),
             'email': self.email,
             'name': self.name,
             'password': self.password,
@@ -81,9 +82,3 @@ class Users:
         }
 
         users.append(new_user)
-
-        if len(users) == 1:
-            users[0]['user_id'] = 1
-
-        elif len(users) > 1:
-            users[-1]['user_id'] = users[-2]['user_id']+1

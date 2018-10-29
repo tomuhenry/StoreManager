@@ -111,7 +111,6 @@ class SalesTestCase(TestCase):
         response = self.testclient.get('/store-manager/api/v1/users/{0}'.format(users[0]['email']))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"user_id", response.data)
-        self.assertEqual(users[0]['user_id'], 1)
 
     def test_get_user_not_found(self):
         self.testclient.post('/store-manager/api/v1/signup', content_type="application/json",

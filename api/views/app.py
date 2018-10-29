@@ -1,15 +1,18 @@
-from flask import Flask, jsonify, json, request, abort, Blueprint
+from flask import Flask, jsonify, session
 from api.views.products_views import prod
 from api.views.sales_views import salebp
 from api.views.user_views import userbp
 
 app = Flask(__name__)
 
+app.secret_key = "SomeRaND0m5eC7eTK3YforSe5510Ns"
+
 app.register_blueprint(prod, url_prefix='/store-manager/api/v1/admin')
 
 app.register_blueprint(salebp, url_prefix='/store-manager/api/v1')
 
 app.register_blueprint(userbp, url_prefix='/store-manager/api/v1')
+
 
 @app.errorhandler(404)
 def not_found(error):

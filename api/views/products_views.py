@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, json, request, abort, Blueprint
+from flask import jsonify, request, abort, Blueprint
 from api.views.functions import Products, products
 
 prod = Blueprint('prod',__name__)
