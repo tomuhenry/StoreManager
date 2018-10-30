@@ -1,24 +1,22 @@
-from flask import jsonify, request, abort, Blueprint, session
+from flask import jsonify, request, abort, Blueprint, session, Flask
 from api.models.users import Users
 from werkzeug.security import generate_password_hash, check_password_hash
-from functools import wraps
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity)
+from validate_email import validate_email
+from datetime import timedelta
+
+app = Flask(__name__)
+
+app.config['JWT_SECRET_KEY'] = 'SomeRaND0m5eC7eTK3Y'
+jwt = JWTManager(app)
 
 userbp = Blueprint('userbp', __name__)
 
 
-# Login required decorator
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            return jsonify({"Unauthorized":"You need to login first"})
-
-        return wrap
-
-
 @userbp.route('/signup', methods=['POST'])
+@jwt_required
 def register_user():
     data = request.json
 
@@ -30,6 +28,10 @@ def register_user():
     if not email or not name or not password or not rights:
         abort(400)
 
+    is_valid = validate_email(email)
+    if not is_valid:
+        return jsonify({"Alert":"Invalid email adress"})
+
     new_user = Users()
     try:
         new_user.add_user(name, email, password, rights)
@@ -40,71 +42,59 @@ def register_user():
     except:
         return jsonify({"message": "Unable to register user"}), 500
 
-    # if user_cls.validate_email() is False:
-    #     return jsonify({"Error": "Invalid email"}), 200
 
-    # if user_cls.check_duplicate() is False:
-    #     return jsonify({"Failed": "User with email '{0}' already exists".format(email)}), 200
-
-    # user_cls.add_user(name, email, password, rights)
-    # return jsonify({"Success": "User with name '{0}' has been added".format(name)}), 201
-
-    # except:
-    #     return jsonify({"message": "Unable to register user"}), 500
-
-
-@userbp.route('/login', methods=['POST', 'GET'])
+@userbp.route('/login', methods=['POST'])
 def user_login():
-    
-    if request.method == 'POST':
         data = request.json
 
         email = data['email']
-        password = data['password']
+        user_password = data['password']
+        
+        logged_user = Users()
 
-        if not email or not password:
+        if not email or not user_password:
             abort(400)
 
-        user = [user for user in users if user['email'] == email]
+        get_user = logged_user.login_user(email)
 
-        if len(user) == 0:
-            return jsonify({"Failure": "Wrong login information"}), 200
+        if not get_user:
+            return jsonify({"Alert":"Wrong email adress"})
 
-        compare_password = check_password_hash(user[0]['password'], password)
+        password = check_password_hash(get_user['password'], user_password)
 
-        if compare_password is True:
-            session['logged_in'] = True
-            return jsonify({"Success": "User Logged in successfuly"}), 200
+        if not password:
+            return jsonify({"Alert":"Wrong password"})
 
-        elif compare_password is False:
-            return jsonify({"Failure": "Wrong login information"}), 200
+        access_token = create_access_token(identity=email, expires_delta=timedelta(hours=1))
 
-@userbp.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    return jsonify({"Message": "You have logged out"})
+        return jsonify(access_token=access_token)
 
-@userbp.route('/users', methods=['GET'])
-def get_all_users():
-    return jsonify({"Users": users})
+# @userbp.route('/logout')
+# def logout():
+#     session.pop('logged_in', None)
+#     return jsonify({"Message": "You have logged out"})
 
-
-@userbp.route('/users/<email>', methods=['GET'])
-def get_user_by_id(email):
-    user = [user for user in users if email in user.values()]
-    if len(user) == 0:
-        return jsonify({"Not Found": "No user with email '{0}' in the database".format(email)}), 404
-
-    else:
-        return jsonify({"User": user}), 200
+# @userbp.route('/users', methods=['GET'])
+# def get_all_users():
+#     return jsonify({"Users": users})
 
 
-@userbp.route('/users/<email>', methods=['DELETE'])
-def delete_user(email):
-    user = [user for user in users if user['email'] == email]
-    if len(user) < 1:
-        return jsonify({"Alert": "User with email '{0}' not in the list".format(email)}), 404
+# @userbp.route('/users/<email>', methods=['GET'])
+# def get_user_by_id(email):
+#     user = [user for user in users if email in user.values()]
+#     if len(user) == 0:
+#         return jsonify({"Not Found": "No user with email '{0}' in the database".format(email)}), 404
 
-    else:
-        users.remove(user[0])
-        return jsonify({"Deleted": "User '{0}' has been deleted".format(user[0]['name'])}), 200
+#     else:
+#         return jsonify({"User": user}), 200
+
+
+# @userbp.route('/users/<email>', methods=['DELETE'])
+# def delete_user(email):
+#     user = [user for user in users if user['email'] == email]
+#     if len(user) < 1:
+#         return jsonify({"Alert": "User with email '{0}' not in the list".format(email)}), 404
+
+#     else:
+#         users.remove(user[0])
+#         return jsonify({"Deleted": "User '{0}' has been deleted".format(user[0]['name'])}), 200

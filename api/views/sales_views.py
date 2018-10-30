@@ -1,5 +1,5 @@
 from flask import jsonify, request, abort, Blueprint
-from api.views.functions import products, Sales, sales
+# from api.models.functions import products, Sales, sales
 
 salebp = Blueprint('salebp',__name__)
 
