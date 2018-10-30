@@ -1,5 +1,5 @@
 from flask import jsonify, request, abort, Blueprint, session
-from api.views.functions import Users, users
+from api.models.users import Users
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 
@@ -25,21 +25,32 @@ def register_user():
     email = data['email']
     name = data['name']
     password = generate_password_hash(data['password'], method='sha256')
-    rights = data['rights']
+    rights = bool(data['rights'])
 
     if not email or not name or not password or not rights:
         abort(400)
 
-    user_cls = Users(email, name, password, rights)
+    new_user = Users()
+    try:
+        new_user.add_user(name, email, password, rights)
+        return jsonify({
+            "message": "User '{0}' registered successfully".format(name)
+        }), 201
 
-    if user_cls.validate_email() is False:
-        return jsonify({"Error": "Invalid email"}), 200
+    except:
+        return jsonify({"message": "Unable to register user"}), 500
 
-    if user_cls.check_duplicate() is False:
-        return jsonify({"Failed": "User with email '{0}' already exists".format(email)}), 200
+    # if user_cls.validate_email() is False:
+    #     return jsonify({"Error": "Invalid email"}), 200
 
-    user_cls.add_user()
-    return jsonify({"Success": "User with name '{0}' has been added".format(name)}), 200
+    # if user_cls.check_duplicate() is False:
+    #     return jsonify({"Failed": "User with email '{0}' already exists".format(email)}), 200
+
+    # user_cls.add_user(name, email, password, rights)
+    # return jsonify({"Success": "User with name '{0}' has been added".format(name)}), 201
+
+    # except:
+    #     return jsonify({"message": "Unable to register user"}), 500
 
 
 @userbp.route('/login', methods=['POST', 'GET'])
