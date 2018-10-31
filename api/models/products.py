@@ -5,19 +5,19 @@ class Products():
     def __init__(self):
         self.database_cls = Database()
 
-    def add_product(self, category, product_name, product_specs, product_price, product_stock):
-        self.category = category
-        self.product_name = product_name
-        self.product_specs = product_specs
-        self.product_price = product_price
-        self.product_stock = product_stock
+    def add_product(self, **kwargs):
+        self.category = kwargs.get('category')
+        self.product_name = kwargs.get('product_name')
+        self.product_specs = kwargs.get('product_specs')
+        self.product_price = kwargs.get('product_price')
+        self.product_stock = kwargs.get('product_stock')
 
         insert_product = """INSERT INTO
                             products(category, product_name, product_specs, 
                             product_price, product_stock) VALUES(%s, %s, %s, %s, %s)"""
 
-        details = (category, product_name, product_specs,
-                   product_price, product_stock)
+        details = (self.category, self.product_name, self.product_specs,
+                   self.product_price, self.product_stock)
 
         self.database_cls.sql_insert(insert_product, details)
 
@@ -37,6 +37,10 @@ class Products():
                             WHERE product_id = {0} """.format(
                                 product_id, product_stock, product_price)
         return self.database_cls.sql_edit_item(edit_product)
+
+    def get_products_by_category(self, category):
+        get_category = " SELECT * FROM products WHERE category = '{0}';".format(category)
+        return self.database_cls.sql_fetch_all(get_category)
 
     @staticmethod
     def get_all_products():

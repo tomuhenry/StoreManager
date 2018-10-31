@@ -7,7 +7,7 @@ class Users():
 
     def add_user(self, name, email, password, rights):
         self.name = name
-        self.email = email
+        self.email = email 
         self.password = password
         self.rights = rights
 
