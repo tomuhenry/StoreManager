@@ -13,7 +13,7 @@ before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 
 script:
-  - py.test --cov api
+  - py.test --cov api/views/
 
 after_success:
   - coveralls

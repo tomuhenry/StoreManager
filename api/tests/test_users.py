@@ -1,6 +1,6 @@
 from unittest import TestCase
 from flask import json
-from api.views import app
+from api.views.app import app
 from api.database.database import Database
 
 sample_user = {

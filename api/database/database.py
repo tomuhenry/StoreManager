@@ -48,7 +48,7 @@ class Database:
             for command in create_commands:
                 self.curs.execute(command)
 
-                conn.commit()
+            conn.commit()
 
         except(Exception, psycopg2.DatabaseError) as error:
             print(error)
@@ -69,7 +69,6 @@ class Database:
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
         finally:
-            if conn is not None:
                 conn.close()
 
     def sql_fetch_all(self, sql_queries):
