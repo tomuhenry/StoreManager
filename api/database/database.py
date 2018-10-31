@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 class Database:
 
     def __init__(self):
-        self.db_parameters = "dbname='storemanagerdb' user='postgres' host='localhost' password='challenge3'"
+        self.db_parameters = "dbname='storemanagerdb' user='postgres' password='challenge3'"
 
         try:
             conn = psycopg2.connect(self.db_parameters)
@@ -48,20 +48,17 @@ class Database:
             for command in create_commands:
                 self.curs.execute(command)
 
-                conn.commit()
+            conn.commit()
 
         except(Exception, psycopg2.DatabaseError) as error:
             print(error)
 
-        finally:
-            conn.close()
 
     def sql_insert(self, sql_queries, information):
         self.sql_queries = sql_queries
         self.information = information
 
         try:
-
             conn = psycopg2.connect(self.db_parameters)
             curs = conn.cursor()
             curs.execute(sql_queries, information)
@@ -69,8 +66,7 @@ class Database:
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
         finally:
-            if conn is not None:
-                conn.close()
+            conn.close()
 
     def sql_fetch_all(self, sql_queries):
         self.sql_queries = sql_queries
@@ -109,7 +105,7 @@ class Database:
 
     @staticmethod
     def drop_table(command):
-        db_parameters = "dbname='storemanagerdb' user='postgres' host='localhost' password='challenge3'"
+        db_parameters = "dbname='storemanagerdb' user='postgres' password='challenge3'"
         conn = psycopg2.connect(db_parameters)
         curs = conn.cursor()
         curs.execute(command)
