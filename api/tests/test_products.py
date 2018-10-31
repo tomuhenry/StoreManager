@@ -11,7 +11,7 @@ sample_product = {
     "product_price": 11500
 }
 edit_product = {
-	"product_stock": 25,
+    "product_stock": 25,
     "product_price": 1200
 }
 wrong_sample_product = {
@@ -22,16 +22,16 @@ wrong_sample_product = {
     "product_price": "1e500"
 }
 
+
 class ProductsTestCase(TestCase):
-    
+
     def setUp(self):
         database_cls = Database()
-        self.headers = {'Content-Type':"application/json"}
+        self.headers = {'Content-Type': "application/json"}
         self.testclient = app.test_client()
-        response = self.testclient.post('/store-manager/api/v1/auth/login', headers = self.headers,
-                             data=json.dumps({'email':'admin@admin.com', 'password':'adminpass'}))
+        response = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
+                                        data=json.dumps({'email': 'admin@admin.com', 'password': 'adminpass'}))
         self.access_token = json.loads(response.data)['access_token']
-        
 
     def test_index_route(self):
         response = self.testclient.get('/')
@@ -40,30 +40,30 @@ class ProductsTestCase(TestCase):
 
     def test_add_product(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
-        response = self.testclient.post('/store-manager/api/v1/admin/products', headers = self.headers,
+        response = self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
                                         data=json.dumps(sample_product))
         self.assertEqual(response.status_code, 201)
         self.assertIn(b"The product has been added", response.data)
 
     def test_add_product_wrongly(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
-        response = self.testclient.post('/store-manager/api/v1/admin/products', headers = self.headers,
+        response = self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
                                         data=json.dumps(edit_product))
         self.assertEquals(response.status_code, 200)
         self.assertIn(b"A key error has been detected,", response.data)
 
     def test_add_product_missing_values(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
-        response = self.testclient.post('/store-manager/api/v1/admin/products', headers = self.headers,
-                                        data=json.dumps({"category": "","product_name": "",
-                                        "product_specs": "5 pcs", "product_stock": 100,
-                                        "product_price": 11500}))
+        response = self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
+                                        data=json.dumps({"category": "", "product_name": "",
+                                                         "product_specs": "5 pcs", "product_stock": 100,
+                                                         "product_price": 11500}))
         self.assertEquals(response.status_code, 400)
         self.assertIn(b"Invalid request/input", response.data)
 
     def test_add_product_with_wrong_data_type(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
-        response = self.testclient.post('/store-manager/api/v1/admin/products', headers = self.headers,
+        response = self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
                                         data=json.dumps(wrong_sample_product))
         self.assertRaises(ValueError)
         self.assertIn(b"Wrong Value in the input", response.data)
@@ -89,38 +89,39 @@ class ProductsTestCase(TestCase):
 
     def test_edit_product(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
-        self.testclient.post('/store-manager/api/v1/admin/products', headers = self.headers,
+        self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
                              data=json.dumps(sample_product))
-        response = self.testclient.put('/store-manager/api/v1/admin/products/1', headers = self.headers,
+        response = self.testclient.put('/store-manager/api/v1/admin/products/1', headers=self.headers,
                                        data=json.dumps(edit_product))
         self.assertEquals(response.status_code, 200)
         self.assertIn(b"Product was updated successfully", response.data)
 
     def test_edit_product_wrongly(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
-        self.testclient.post('/store-manager/api/v1/admin/products', headers = self.headers,
+        self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
                              data=json.dumps(sample_product))
-        response = self.testclient.put('/store-manager/api/v1/admin/products/1', headers = self.headers,
+        response = self.testclient.put('/store-manager/api/v1/admin/products/1', headers=self.headers,
                                        data=json.dumps({"product_price": 1200}))
         self.assertEquals(response.status_code, 200)
         self.assertIn(b"A key error has been detected,", response.data)
 
     def test_delete_product(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
-        self.testclient.post('/store-manager/api/v1/admin/products', headers = self.headers,
+        self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
                              data=json.dumps(sample_product))
         response = self.testclient.delete(
-            '/store-manager/api/v1/admin/products/1', headers = self.headers)
+            '/store-manager/api/v1/admin/products/1', headers=self.headers)
         self.assertEquals(response.status_code, 200)
         self.assertIn(b"Product was deleted successfully", response.data)
 
     def test_delete_product_removed(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
-        self.testclient.post('/store-manager/api/v1/admin/products', headers = self.headers,
+        self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
                              data=json.dumps(sample_product))
-        self.testclient.delete('/store-manager/api/v1/admin/products/1', headers = self.headers)
+        self.testclient.delete(
+            '/store-manager/api/v1/admin/products/1', headers=self.headers)
         response = self.testclient.get(
-            '/store-manager/api/v1/admin/products/1', headers = self.headers)
+            '/store-manager/api/v1/admin/products/1', headers=self.headers)
         self.assertEquals(response.status_code, 200)
         self.assertIn(b"null", response.data)
 

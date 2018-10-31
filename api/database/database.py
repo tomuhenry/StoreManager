@@ -36,14 +36,15 @@ class Database:
                     sale_id serial PRIMARY KEY,
                     sale_quantity int NOT NULL,
                     sale_price INT,
-                    date_sold DATE NOT NULL,
-                    product_id FOREIGN KEY
+                    date_sold DATE NOT NULL
                     )""",
 
                 """ INSERT INTO users(name, email, password, rights)
-                    SELECT * FROM (SELECT 'Tomu Henry', 'admin@admin.com', '{0}' , TRUE)
-                    AS tmp WHERE NOT EXISTS(SELECT email FROM users 
-                    WHERE email = 'admin@admin.com')LIMIT 1;""".format(admin_pass)
+                    SELECT * FROM (
+                        SELECT 'Tomu Henry', 'admin@admin.com', '{0}' , TRUE)
+                    AS tmp WHERE NOT EXISTS(SELECT email FROM users
+                    WHERE email = 'admin@admin.com')
+                    LIMIT 1;""".format(admin_pass)
             )
 
             for command in create_commands:
@@ -53,7 +54,6 @@ class Database:
 
         except(Exception, psycopg2.DatabaseError) as error:
             print(error)
-
 
     def sql_insert(self, sql_queries, information):
         self.sql_queries = sql_queries
