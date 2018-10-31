@@ -8,8 +8,10 @@ from datetime import timedelta
 
 userbp = Blueprint('userbp', __name__)
 
+user_cls = Users()
+
 @userbp.route('/auth/signup', methods=['POST'])
-# @jwt_required
+@jwt_required
 def register_user():
     data = request.json
 
@@ -17,7 +19,6 @@ def register_user():
     name = data['name']
     password = generate_password_hash(data['password'], method='sha256')
     rights = data['rights']
-    user_cls = Users()
 
     if not email or not name or not password or not rights:
         abort(400)
@@ -45,8 +46,6 @@ def user_login():
         if not email or not user_password:
             abort(400)
 
-        user_cls = Users()
-
         logged_user = user_cls.login_user(email)
 
         if not logged_user:
@@ -59,37 +58,33 @@ def user_login():
 
         access_token = create_access_token(identity=email, expires_delta=timedelta(hours=1))
 
-        return jsonify(access_token=access_token)
+        return jsonify({"access_token":access_token})
 
 @userbp.route('/users', methods=['GET'])
-# @jwt_required
+@jwt_required
 def get_all_users():
-    user_cls = Users()
     return jsonify({"Users": user_cls.get_all_users()})
 
 
 @userbp.route('/users/<email>', methods=['GET'])
-# @jwt_required
+@jwt_required
 def get_user_by_email(email):
-    user_cls = Users()
     user = user_cls.get_user_by_email(email)
     if not user:
         abort(404)
     return jsonify({"User":user})
 
 @userbp.route('/users/<int:user_id>', methods=['GET'])
-# @jwt_required
-def get_user_by_id(user_id):
-    user_cls = Users()    
+@jwt_required
+def get_user_by_id(user_id):    
     user = user_cls.get_user_by_id(user_id)
     if not user:
         abort(404)
     return jsonify({"User":user})
 
 @userbp.route('/users/<email>', methods=['DELETE'])
-# @jwt_required
+@jwt_required
 def delete_user(email):
-    user_cls = Users()
     user = user_cls.get_user_by_email(email)
     if not user:
         return jsonify({"Not found":"User with email '{0}' not found".format(email)}),404

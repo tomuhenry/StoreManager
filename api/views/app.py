@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = 'SomeRaND0m5eC7eTK3Y'
 jwt = JWTManager(app)
 
-app.register_blueprint(prodbp, url_prefix='/store-manager/api/v1/admin')
+app.register_blueprint(prodbp, url_prefix='/store-manager/api/v1')
 
 app.register_blueprint(salebp, url_prefix='/store-manager/api/v1')
 
@@ -29,9 +29,9 @@ def server_error(error):
     return jsonify({'error': 'There has been a Server Error'}), 500
 
 
-@app.errorhandler(TypeError)
-def type_error(error):
-    return jsonify({'error': 'Wrong input type'})
+# @app.errorhandler(TypeError)
+# def type_error(error):
+#     return jsonify({'error': 'Type Error has occured'})
 
 
 @app.errorhandler(ValueError)
