@@ -36,7 +36,8 @@ class Database:
                     sale_id serial PRIMARY KEY,
                     sale_quantity int NOT NULL,
                     sale_price INT,
-                    date_sold DATE NOT NULL
+                    date_sold DATE NOT NULL,
+                    product_id FOREIGN KEY
                     )""",
 
                 """ INSERT INTO users(name, email, password, rights)
