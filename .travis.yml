@@ -11,10 +11,10 @@ install:
 
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
-  - psql -c 'ALTER USER postgres WITH PASSWORD challenge;' -U pastgres
+  - psql -c 'ALTER USER postgres WITH PASSWORD challenge;' -U postgres
 
 script:
-  - py.test --cov api/views
+  - py.test --cov api
 
 after_success:
   - coveralls

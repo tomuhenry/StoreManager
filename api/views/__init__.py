@@ -20,6 +20,14 @@ app.register_blueprint(userbp, url_prefix='/store-manager/api/v1')
 def bad_request(error):
     return jsonify({'error': 'Invalid request/input'}), 400
 
+@app.errorhandler(404)
+def bad_request(error):
+    return jsonify({'error': 'Information could not be found'}), 404
+
+@app.errorhandler(500)
+def bad_request(error):
+    return jsonify({'error': 'There has been a Server Error'}), 500
+
 
 @app.errorhandler(TypeError)
 def type_error(error):
