@@ -1,14 +1,13 @@
 from flask import jsonify, request, abort, Blueprint
-from api.views.user_views import app
 from api.models.products import Products
 from flask_jwt_extended import jwt_required
 
-prod = Blueprint('prod', __name__)
+prodbp = Blueprint('prod', __name__)
 
 product_cls = Products()
 
-@prod.route('/products', methods=['POST'])
-@jwt_required
+@prodbp.route('/products', methods=['POST'])
+# @jwt_required
 def add_product():
     data = request.json
 
@@ -27,26 +26,26 @@ def add_product():
     return jsonify({"Success": "The product has been added"}), 201
 
 
-@prod.route('/products', methods=['GET'])
-@jwt_required
+@prodbp.route('/products', methods=['GET'])
+# @jwt_required
 def view_all_products():
-    return jsonify(product_cls.get_all_products())
+    return jsonify({"Products":product_cls.get_all_products()})
 
 
-@prod.route('/products/<int:product_id>', methods=['GET'])
-@jwt_required
+@prodbp.route('/products/<int:product_id>', methods=['GET'])
+# @jwt_required
 def view_one_product(product_id):
-    return jsonify({"product":product_cls.get_one_product_by_id(product_id)}), 200
+    return jsonify({"Product":product_cls.get_one_product_by_id(product_id)}), 200
 
 
-@prod.route('/products/<product_id>', methods=['DELETE'])
-@jwt_required
+@prodbp.route('/products/<product_id>', methods=['DELETE'])
+# @jwt_required
 def delete_a_product(product_id):
     product_cls.delete_a_product(product_id)
     return jsonify({"Deleted":"Product was deleted successfully"}), 200
 
-@prod.route('/products/<product_id>', methods=['PUT'])
-@jwt_required
+@prodbp.route('/products/<product_id>', methods=['PUT'])
+# @jwt_required
 def edit_product(product_id):
     data = request.json
 

@@ -1,22 +1,16 @@
 from flask import jsonify, request, abort, Blueprint, session, Flask
 from api.models.users import Users
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import (
-    JWTManager, jwt_required, create_access_token,
+from flask_jwt_extended import (jwt_required, create_access_token,
     get_jwt_identity)
 from validate_email import validate_email
 from datetime import timedelta
-
-app = Flask(__name__)
-
-app.config['JWT_SECRET_KEY'] = 'SomeRaND0m5eC7eTK3Y'
-jwt = JWTManager(app)
 
 userbp = Blueprint('userbp', __name__)
 
 
 @userbp.route('/signup', methods=['POST'])
-@jwt_required
+# @jwt_required
 def register_user():
     data = request.json
 

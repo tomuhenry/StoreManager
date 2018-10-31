@@ -40,7 +40,9 @@ class Database:
                     )""",
 
                 """ INSERT INTO users(name, email, password, rights)
-                    VALUES('Tomu Henry', 'admin@admin.com', '{0}' , TRUE)""".format(admin_pass)
+                    SELECT * FROM (SELECT 'Tomu Henry', 'admin@admin.com', '{0}' , TRUE)
+                    AS tmp WHERE NOT EXISTS(SELECT email FROM users 
+                    WHERE email = 'admin@admin.com')LIMIT 1;""".format(admin_pass)
             )
 
             for command in create_commands:
@@ -102,5 +104,14 @@ class Database:
         conn = psycopg2.connect(self.db_parameters)
         curs = conn.cursor(cursor_factory=RealDictCursor)
         curs.execute(sql_queries)
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def drop_table(command):
+        db_parameters = "dbname='storemanagerdb' user='postgres' host='localhost' password='challenge3'"
+        conn = psycopg2.connect(db_parameters)
+        curs = conn.cursor()
+        curs.execute(command)
         conn.commit()
         conn.close()
