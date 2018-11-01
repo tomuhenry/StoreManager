@@ -24,12 +24,15 @@ def add_product():
     if user_check() is False:
         return jsonify({"Alert": "You're not Authorized to perform action"}), 401
 
-    product_cls.add_product(product_name=product_name,
-                            product_specs=product_specs,
-                            product_price=product_price,
-                            product_stock=product_stock)
+    check_dup = product_cls.check_same_product(product_name, product_specs)
 
-    return jsonify({"Success": "The product has been added"}), 201
+    if not check_dup:
+        product_cls.add_product(product_name=product_name,
+                                product_specs=product_specs,
+                                product_price=product_price,
+                                product_stock=product_stock)
+        return jsonify({"Success": "The product has been added"}), 201
+    return jsonify({"Duplicate": "This product is already in the database"}), 200
 
 
 @prodbp.route('admin/products', methods=['GET'])

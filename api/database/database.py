@@ -33,17 +33,16 @@ class Database:
 
             """ CREATE TABLE IF NOT EXISTS sales(
                 sale_id serial PRIMARY KEY,
-                sale_quantity int NOT NULL,
-                sale_price INT,
-                date_sold DATE NOT NULL
+                sale_quantity INT NOT NULL,
+                sale_price INTEGER,
+                date_sold TIME,
+                product_sold INTEGER REFERENCES products(product_id) ON DELETE CASCADE
                 )""",
             
             """ CREATE TABLE IF NOT EXISTS category(
                 cetegory_id serial PRIMARY KEY,
-                product_sold INTEGER REFERENCES products(product_id)
-                ON DELETE RESTRICT,
+                product_id INTEGER REFERENCES products(product_id),
                 category_name VARCHAR(80) NOT NULL
-                
                 )""",
 
             """ INSERT INTO users(name, email, password, rights)

@@ -138,5 +138,6 @@ class ProductsTestCase(TestCase):
 
     def tearDown(self):
         database_cls = Database()
+        database_cls.drop_table("DROP TABLE sales")
         database_cls.drop_table("DROP TABLE category")
         database_cls.drop_table("DROP TABLE products")

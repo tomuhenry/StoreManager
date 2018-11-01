@@ -1,7 +1,6 @@
 from api.views.user_views import userbp
 from api.views.products_views import prodbp
 from api.views.sales_views import salebp
-
 from flask import jsonify, Blueprint, Flask
 from flask_jwt_extended import JWTManager
 
@@ -29,9 +28,9 @@ def server_error(error):
     return jsonify({'error': 'There has been a Server Error'}), 500
 
 
-# @app.errorhandler(TypeError)
-# def type_error(error):
-#     return jsonify({'error': 'Type Error has occured'})
+@app.errorhandler(TypeError)
+def type_error(error):
+    return jsonify({'error': 'Type Error has occured'})
 
 
 @app.errorhandler(ValueError)
