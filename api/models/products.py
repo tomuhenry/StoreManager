@@ -37,6 +37,11 @@ class Products:
             product_id, product_name, product_stock, product_price)
         return self.database_cls.execute_query(edit_product)
 
+    def check_same_product(self, product_name, product_specs):
+        same_product = """ SELECT * FROM products WHERE product_name = '{0}' AND
+                    product_specs = '{1}'""".format(product_name, product_specs)
+        return self.database_cls.sql_fetch_all(same_product)
+
     def create_category(self, category_name):
         add_category = """ INSERT INTO category(category_name) VALUES(%s) """
         details = (category_name)

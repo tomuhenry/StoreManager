@@ -52,6 +52,9 @@ The Store Manager program helps in store management
 8. The Admin call also perform other functions like view the list of products, view sales, add users, view user details, get specific details for specific products, sales or users, edit product details and delete a product
 5. The user can make sale reports, and search products
 
+## Postman Collection
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/b8f14a55c12bd2dfa022)
+
 
 ## Documentation with postman
 

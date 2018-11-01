@@ -70,7 +70,7 @@ def user_login():
         return jsonify({"Alert": "Wrong password"}), 200
 
     access_token = create_access_token(
-        identity=email, expires_delta=timedelta(hours=1))
+        identity=email, expires_delta=timedelta(hours=2))
 
     return jsonify({"access_token": access_token})
 
