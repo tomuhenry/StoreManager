@@ -11,6 +11,7 @@ sample_product = {
     "product_price": 11500
 }
 edit_product = {
+    "product_name": "Rolex",
     "product_stock": 25,
     "product_price": 1200
 }
@@ -74,7 +75,8 @@ class ProductsTestCase(TestCase):
         self.assertIn(b"Products", response.data)
 
     def test_get_one_product(self):
-        self.testclient.post('/store-manager/api/v1/admin/products',
+        self.headers['Authorization'] = "Bearer " + self.access_token
+        self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
                              data=json.dumps(sample_product))
         response = self.testclient.get(
             '/store-manager/api/v1/admin/products/1')
@@ -84,8 +86,8 @@ class ProductsTestCase(TestCase):
     def test_get_one_product_not_found(self):
         response = self.testclient.get(
             '/store-manager/api/v1/admin/products/101')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b"null", response.data)
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(b"Not Found", response.data)
 
     def test_edit_product(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
@@ -105,6 +107,15 @@ class ProductsTestCase(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertIn(b"A key error has been detected,", response.data)
 
+    def test_edit_product_not_found(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token
+        self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
+                             data=json.dumps(sample_product))
+        response = self.testclient.put('/store-manager/api/v1/admin/products/3', headers=self.headers,
+                                       data=json.dumps(edit_product))
+        self.assertEquals(response.status_code, 404)
+        self.assertIn(b"Not Found", response.data)
+
     def test_delete_product(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
         self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
@@ -122,8 +133,8 @@ class ProductsTestCase(TestCase):
             '/store-manager/api/v1/admin/products/1', headers=self.headers)
         response = self.testclient.get(
             '/store-manager/api/v1/admin/products/1', headers=self.headers)
-        self.assertEquals(response.status_code, 200)
-        self.assertIn(b"null", response.data)
+        self.assertEquals(response.status_code, 404)
+        self.assertIn(b"Not Found", response.data)
 
     def tearDown(self):
         database_cls = Database()

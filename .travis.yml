@@ -13,7 +13,7 @@ before_script:
   - psql -c 'create database storemanagerdb;' -U postgres
 
 script:
-  - py.test --cov api/views/
+  - py.test --cov api
 
 after_success:
   - coveralls

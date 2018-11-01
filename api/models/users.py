@@ -43,5 +43,10 @@ class Users():
     def delete_user_by_email(self, email):
         delete_user = "DELETE FROM users WHERE email = '{0}'; ".format(
             email)
-        return self.database_cls.sql_delete_item(delete_user)
+        return self.database_cls.execute_query(delete_user)
+
+    def edit_user_rights(self, user_id, rights):
+        edit_user = """UPDATE users SET rights = {1} WHERE user_id = {0} """.format(
+            user_id, rights)
+        return self.database_cls.execute_query(edit_user)
 

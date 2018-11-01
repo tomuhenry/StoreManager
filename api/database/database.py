@@ -8,66 +8,65 @@ class Database:
     def __init__(self):
         self.db_parameters = "dbname='storemanagerdb' user='postgres' password='challenge3'"
 
-        try:
-            conn = psycopg2.connect(self.db_parameters)
-            self.curs = conn.cursor()
-            admin_pass = generate_password_hash('adminpass')
+        conn = psycopg2.connect(self.db_parameters)
+        self.curs = conn.cursor()
+        admin_pass = generate_password_hash('adminpass')
 
-            # Create database tables
+        # Create database tables
 
-            create_commands = (
-                """ CREATE TABLE IF NOT EXISTS users(
-                    user_id serial PRIMARY KEY,
-                    name VARCHAR(80) NOT NULL,
-                    email VARCHAR(80) UNIQUE,
-                    password VARCHAR(300) NOT NULL,
-                    rights BOOLEAN DEFAULT FALSE
-                    )""",
-                """ CREATE TABLE IF NOT EXISTS products(
-                    product_id serial PRIMARY KEY,
-                    category VARCHAR(80) NOT NULL,
-                    product_name VARCHAR(100) NOT NULL,
-                    product_specs VARCHAR(50) NOT NULL,
-                    product_price INT NOT NULL,
-                    product_stock INT NOT NULL
-                    )""",
+        create_commands = (
+            """ CREATE TABLE IF NOT EXISTS users(
+                user_id serial PRIMARY KEY,
+                name VARCHAR(80) NOT NULL,
+                email VARCHAR(80) UNIQUE,
+                password VARCHAR(300) NOT NULL,
+                rights BOOLEAN DEFAULT FALSE
+                )""",
 
-                """ CREATE TABLE IF NOT EXISTS sales(
-                    sale_id serial PRIMARY KEY,
-                    sale_quantity int NOT NULL,
-                    sale_price INT,
-                    date_sold DATE NOT NULL
-                    )""",
+            """ CREATE TABLE IF NOT EXISTS products(
+                product_id serial PRIMARY KEY,
+                product_name VARCHAR(100) NOT NULL,
+                product_specs VARCHAR(50),
+                product_price INT NOT NULL,
+                product_stock INT NOT NULL
+                )""",
 
-                """ INSERT INTO users(name, email, password, rights)
-                    SELECT * FROM (
-                        SELECT 'Tomu Henry', 'admin@admin.com', '{0}' , TRUE)
-                    AS tmp WHERE NOT EXISTS(SELECT email FROM users
-                    WHERE email = 'admin@admin.com')
-                    LIMIT 1;""".format(admin_pass)
-            )
+            """ CREATE TABLE IF NOT EXISTS sales(
+                sale_id serial PRIMARY KEY,
+                sale_quantity int NOT NULL,
+                sale_price INT,
+                date_sold DATE NOT NULL
+                )""",
+            
+            """ CREATE TABLE IF NOT EXISTS category(
+                cetegory_id serial PRIMARY KEY,
+                product_sold INTEGER REFERENCES products(product_id)
+                ON DELETE RESTRICT,
+                category_name VARCHAR(80) NOT NULL
+                
+                )""",
 
-            for command in create_commands:
-                self.curs.execute(command)
+            """ INSERT INTO users(name, email, password, rights)
+                SELECT * FROM (
+                    SELECT 'Tomu Henry', 'admin@admin.com', '{0}' , TRUE)
+                AS tmp WHERE NOT EXISTS(SELECT email FROM users
+                WHERE email = 'admin@admin.com')
+                LIMIT 1;""".format(admin_pass)
+        )
 
-            conn.commit()
+        for command in create_commands:
+            self.curs.execute(command)
 
-        except(Exception, psycopg2.DatabaseError) as error:
-            print(error)
+        conn.commit()
 
     def sql_insert(self, sql_queries, information):
         self.sql_queries = sql_queries
         self.information = information
-
-        try:
-            conn = psycopg2.connect(self.db_parameters)
-            curs = conn.cursor()
-            curs.execute(sql_queries, information)
-            conn.commit()
-        except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
-        finally:
-            conn.close()
+        conn = psycopg2.connect(self.db_parameters)
+        curs = conn.cursor(cursor_factory=RealDictCursor)
+        curs.execute(sql_queries, information)
+        conn.commit()
+        conn.close()
 
     def sql_fetch_all(self, sql_queries):
         self.sql_queries = sql_queries
@@ -88,15 +87,7 @@ class Database:
         conn.close()
         return fetched
 
-    def sql_delete_item(self, sql_queries):
-        self.sql_queries = sql_queries
-        conn = psycopg2.connect(self.db_parameters)
-        curs = conn.cursor()
-        curs.execute(sql_queries)
-        conn.commit()
-        conn.close()
-
-    def sql_edit_item(self, sql_queries):
+    def execute_query(self, sql_queries):
         self.sql_queries = sql_queries
         conn = psycopg2.connect(self.db_parameters)
         curs = conn.cursor(cursor_factory=RealDictCursor)
