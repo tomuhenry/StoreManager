@@ -6,5 +6,5 @@ class Sales:
         self.database_cls = Database()
         self.time = datetime.now()
 
-    def make_sale():
+    def make_a_sale(self):
         pass
