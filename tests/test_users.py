@@ -146,12 +146,10 @@ class UserTestCase(TestCase):
 
     def test_get_user_by_id(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
-        self.testclient.post('/store-manager/api/v1/auth/signup', headers=self.headers,
-                             data=json.dumps(sample_user))
         response = self.testclient.get(
-            '/store-manager/api/v1/users/2', headers=self.headers)
+            '/store-manager/api/v1/users/1', headers=self.headers)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"admin@trueadmin.com", response.data)
+        self.assertIn(b"user_id", response.data)
 
     def test_get_user_not_found(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
@@ -175,6 +173,15 @@ class UserTestCase(TestCase):
             '/store-manager/api/v1/users/email', headers=self.headers)
         self.assertEqual(response.status_code, 404)
         self.assertIn(b"User with email 'email' not found", response.data)
+
+    def test_edit_user(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token
+        self.testclient.post('/store-manager/api/v1/auth/signup', headers=self.headers,
+                             data=json.dumps(sample_user))
+        response = self.testclient.put('/store-manager/api/v1/users/2', headers=self.headers,
+                                       data=json.dumps({"rights": "true"}))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"User Rights have been changed", response.data)
 
     def tearDown(self):
         database_cls = Database()

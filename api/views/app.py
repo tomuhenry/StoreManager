@@ -27,11 +27,9 @@ def not_found(error):
 def server_error(error):
     return jsonify({'error': 'There has been a Server Error'}), 500
 
-
 @app.errorhandler(TypeError)
 def type_error(error):
     return jsonify({'error': 'Type Error has occured'})
-
 
 @app.errorhandler(ValueError)
 def value_error(error):
