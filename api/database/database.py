@@ -11,6 +11,7 @@ class Database:
         conn = psycopg2.connect(self.db_parameters)
         self.curs = conn.cursor()
         admin_pass = generate_password_hash('adminpass')
+        user_pass = generate_password_hash('userpass')
 
         # Create database tables
 
@@ -35,13 +36,13 @@ class Database:
                 sale_id serial PRIMARY KEY,
                 sale_quantity INT NOT NULL,
                 sale_price INTEGER,
-                date_sold TIME,
+                date_sold DATE,
                 product_sold INTEGER REFERENCES products(product_id) ON DELETE CASCADE
                 )""",
             
             """ CREATE TABLE IF NOT EXISTS category(
                 cetegory_id serial PRIMARY KEY,
-                product_id INTEGER REFERENCES products(product_id),
+                product_id INTEGER REFERENCES products(product_id) ON DELETE CASCADE,
                 category_name VARCHAR(80) NOT NULL
                 )""",
 
@@ -50,7 +51,15 @@ class Database:
                     SELECT 'Tomu Henry', 'admin@admin.com', '{0}' , TRUE)
                 AS tmp WHERE NOT EXISTS(SELECT email FROM users
                 WHERE email = 'admin@admin.com')
-                LIMIT 1;""".format(admin_pass)
+                LIMIT 1;""".format(admin_pass),
+
+            """ INSERT INTO users(name, email, password, rights)
+                SELECT * FROM (
+                    SELECT 'Not Admin', 'notadmin@notadmin.com', '{0}' , FALSE)
+                AS tmp WHERE NOT EXISTS(SELECT email FROM users
+                WHERE email = 'notadmin@notadmin.com')
+                LIMIT 1;""".format(user_pass)
+
         )
 
         for command in create_commands:

@@ -32,6 +32,7 @@ def add_product():
                                 product_price=product_price,
                                 product_stock=product_stock)
         return jsonify({"Success": "The product has been added"}), 201
+        
     return jsonify({"Duplicate": "This product is already in the database"}), 200
 
 
