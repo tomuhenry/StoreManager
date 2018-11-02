@@ -13,8 +13,8 @@ product_cls = Products()
 def add_product():
     data = request.json
 
-    product_name = data['product_name']
-    product_specs = data['product_specs']
+    product_name = str(data['product_name'])
+    product_specs = str(data['product_specs'])
     product_stock = int(data['product_stock'])
     product_price = int(data['product_price'])
 
