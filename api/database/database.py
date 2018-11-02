@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 class Database:
 
     def __init__(self):
-        self.db_parameters = "dbname='storemanagerdb' user='postgres' password='challenge3'"
+        self.db_parameters = "dbname='d1vmvfikb5uur1' user='zalepgsiftvtnk' password='b9dae2275c010d0f2fe2410d644d6b286a702e8ae26a95fded2023d8987a11de' host='ec2-23-23-153-145.compute-1.amazonaws.com'"
 
         conn = psycopg2.connect(self.db_parameters)
         self.curs = conn.cursor()
@@ -105,7 +105,7 @@ class Database:
 
     @staticmethod
     def drop_table(command):
-        db_parameters = "dbname='storemanagerdb' user='postgres' password='challenge3'"
+        db_parameters = "dbname='d1vmvfikb5uur1' user='zalepgsiftvtnk' password='b9dae2275c010d0f2fe2410d644d6b286a702e8ae26a95fded2023d8987a11de' host='ec2-23-23-153-145.compute-1.amazonaws.com'"
         conn = psycopg2.connect(db_parameters)
         curs = conn.cursor()
         curs.execute(command)
