@@ -13,8 +13,6 @@ class Database:
         admin_pass = generate_password_hash('adminpass')
         user_pass = generate_password_hash('userpass')
 
-        # Create database tables
-
         create_commands = (
             """ CREATE TABLE IF NOT EXISTS users(
                 user_id serial PRIMARY KEY,
