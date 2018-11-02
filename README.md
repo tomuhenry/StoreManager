@@ -59,4 +59,4 @@ The Store Manager program helps in store management
 
 ## Documentation with postman
 
-> https://documenter.getpostman.com/view/5104454/RWguwcNw
+> https://documenter.getpostman.com/view/5104454/RzZ4q2Pa
