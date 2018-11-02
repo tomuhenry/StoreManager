@@ -3,6 +3,7 @@ The Store Manager program helps in store management
 
 
 [![Build Status](https://travis-ci.org/tomuhenry/StoreManager.svg?branch=Challenge-3)](https://travis-ci.org/tomuhenry/StoreManager) [![Maintainability](https://api.codeclimate.com/v1/badges/9911fbacb5e0ded390b1/maintainability)](https://codeclimate.com/github/tomuhenry/StoreManager/maintainability)[![Coverage Status](https://coveralls.io/repos/github/tomuhenry/StoreManager/badge.svg?branch=Challenge-3)](https://coveralls.io/github/tomuhenry/StoreManager?branch=Challenge-3)
+
 ## Front-end User Interface
 
 1. The user interface for this application can be viewed on https://tomuhenry.github.io/StoreManager/
@@ -12,7 +13,7 @@ The Store Manager program helps in store management
 ## Getting started
 
 1. Clone the project repository from github using command 
-> git clone https://github.com/tomuhenry/StoreManager.git
+    > git clone https://github.com/tomuhenry/StoreManager.git
 
 2. cd into the cloned repository from you local machine
 
