@@ -21,7 +21,7 @@ def add_sales():
     product_sold = int(data['product_sold'])
     date_sold = datetime.now()
 
-    if not sale_quantity or not product_sold or not product_sold:
+    if not sale_quantity or not product_sold:
         abort(400)
 
     if user_check() is True:

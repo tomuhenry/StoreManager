@@ -60,7 +60,7 @@ class UserTestCase(TestCase):
                                         data=json.dumps({"name": "henry tom", "email": "adminotheradmincom",
                                                          "password": "adminpassword", "rights": 't'}))
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Invalid email adress", response.data)
+        self.assertIn(b"Invalid email address", response.data)
 
     def test_duplicate_email(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
