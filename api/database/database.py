@@ -42,7 +42,7 @@ class Database:
                 product_sold INTEGER REFERENCES products(product_id) 
                 ON DELETE CASCADE
                 )""",
-            
+
             """ CREATE TABLE IF NOT EXISTS category(
                 cetegory_id serial PRIMARY KEY,
                 product_id INTEGER REFERENCES products(product_id) 
