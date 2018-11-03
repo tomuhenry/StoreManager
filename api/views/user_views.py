@@ -28,7 +28,7 @@ def register_user():
     email = data['email']
     name = data['name']
     password = generate_password_hash(data['password'], method='sha256')
-    rights = data['rights']
+    rights = bool(data['rights'])
 
     if not email or not name or not password:
         abort(400)

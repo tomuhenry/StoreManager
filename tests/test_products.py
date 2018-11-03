@@ -1,6 +1,6 @@
 from unittest import TestCase
 from flask import json
-from api.views.app import app
+from api import app
 from api.database.database import Database
 
 sample_product = {
@@ -155,8 +155,33 @@ class ProductsTestCase(TestCase):
         self.assertEquals(response.status_code, 404)
         self.assertIn(b"Not Found", response.data)
 
+    def test_add_new_category(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token1
+        response = self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
+                             data=json.dumps({"category_name":"Electronics"}))
+        self.assertEquals(response.status_code, 201)
+        self.assertIn(b"New Category 'Electronics' created successfully", response.data)
+
+    def test_add_duplicate_category(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token1
+        self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
+                             data=json.dumps({"category_name":"Electronics"}))
+        response = self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
+                             data=json.dumps({"category_name":"Electronics"}))
+        self.assertEquals(response.status_code, 200)
+        self.assertIn(b"Category already exists", response.data)
+
+    def test_add_new_category_unauthorized(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token2
+        response = self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
+                             data=json.dumps({"category_name":"Electronics"}))
+        self.assertEquals(response.status_code, 401)
+        self.assertIn(b"Only Admin can perform this action", response.data)
+
+
     def tearDown(self):
         database_cls = Database()
         database_cls.drop_table("DROP TABLE sales")
         database_cls.drop_table("DROP TABLE category")
         database_cls.drop_table("DROP TABLE products")
+        database_cls = Database()

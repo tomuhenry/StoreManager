@@ -1,6 +1,6 @@
 from unittest import TestCase
 from flask import json
-from api.views.app import app
+from api import app
 from api.database.database import Database
 
 sample_sale = {
@@ -104,3 +104,4 @@ class SalesTestCase(TestCase):
     def tearDown(self):
             database_cls = Database()
             database_cls.drop_table("DROP TABLE sales")
+            database_cls = Database()
