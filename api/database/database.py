@@ -6,7 +6,11 @@ from werkzeug.security import generate_password_hash
 class Database:
 
     def __init__(self):
-        self.db_parameters = "dbname='d1vmvfikb5uur1' user='zalepgsiftvtnk' password='b9dae2275c010d0f2fe2410d644d6b286a702e8ae26a95fded2023d8987a11de' host='ec2-23-23-153-145.compute-1.amazonaws.com'"
+
+        self.db_parameters = """dbname='d4eo92qumfels6' user='rydoowkieaxjhf' 
+                    password='451025a5501925f1a9c2dad02c65fdd1122b1cc2cfa8d94d021d86e059f74b51' 
+                    host = 'ec2-54-83-38-174.compute-1.amazonaws.com'"""
+
 
         conn = psycopg2.connect(self.db_parameters)
         self.curs = conn.cursor()
@@ -35,12 +39,14 @@ class Database:
                 sale_quantity INT NOT NULL,
                 sale_price INTEGER,
                 date_sold DATE,
-                product_sold INTEGER REFERENCES products(product_id) ON DELETE CASCADE
+                product_sold INTEGER REFERENCES products(product_id) 
+                ON DELETE CASCADE
                 )""",
             
             """ CREATE TABLE IF NOT EXISTS category(
                 cetegory_id serial PRIMARY KEY,
-                product_id INTEGER REFERENCES products(product_id) ON DELETE CASCADE,
+                product_id INTEGER REFERENCES products(product_id) 
+                ON DELETE CASCADE,
                 category_name VARCHAR(80) NOT NULL
                 )""",
 
@@ -103,7 +109,11 @@ class Database:
 
     @staticmethod
     def drop_table(command):
-        db_parameters = "dbname='d1vmvfikb5uur1' user='zalepgsiftvtnk' password='b9dae2275c010d0f2fe2410d644d6b286a702e8ae26a95fded2023d8987a11de' host='ec2-23-23-153-145.compute-1.amazonaws.com'"
+
+        db_parameters = """dbname='d4eo92qumfels6' user='rydoowkieaxjhf' 
+                    password='451025a5501925f1a9c2dad02c65fdd1122b1cc2cfa8d94d021d86e059f74b51' 
+                    host = 'ec2-54-83-38-174.compute-1.amazonaws.com'"""
+
         conn = psycopg2.connect(db_parameters)
         curs = conn.cursor()
         curs.execute(command)

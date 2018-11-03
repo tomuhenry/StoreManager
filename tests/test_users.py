@@ -1,6 +1,6 @@
 from unittest import TestCase
 from flask import json
-from api.views.app import app
+from api import app
 from api.database.database import Database
 
 sample_user = {
@@ -60,7 +60,7 @@ class UserTestCase(TestCase):
                                         data=json.dumps({"name": "henry tom", "email": "adminotheradmincom",
                                                          "password": "adminpassword", "rights": 't'}))
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Invalid email adress", response.data)
+        self.assertIn(b"Invalid email address", response.data)
 
     def test_duplicate_email(self):
         self.headers['Authorization'] = "Bearer " + self.access_token
@@ -186,3 +186,4 @@ class UserTestCase(TestCase):
     def tearDown(self):
         database_cls = Database()
         database_cls.drop_table("DROP TABLE users")
+        database_cls = Database()

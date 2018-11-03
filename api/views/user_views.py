@@ -28,7 +28,7 @@ def register_user():
     email = data['email']
     name = data['name']
     password = generate_password_hash(data['password'], method='sha256')
-    rights = data['rights']
+    rights = bool(data['rights'])
 
     if not email or not name or not password:
         abort(400)
@@ -39,14 +39,12 @@ def register_user():
     is_valid = validate_email(email)
 
     if not is_valid:
-        return jsonify({"Alert": "Invalid email adress"}), 200
+        return jsonify({"Alert": "Invalid email address"}), 200
 
     if not user_cls.get_user_by_email(email):
         user_cls.add_user(name, email, password, rights)
         return jsonify({"Message": "User '{0}' registered successfully".format(name)}), 201
-
-    else:
-        return jsonify({"Alert": "Email '{0}' already exists".format(email)}), 200
+    return jsonify({"Alert": "Email '{0}' already exists".format(email)}), 200
 
 
 @userbp.route('/auth/login', methods=['POST'])
