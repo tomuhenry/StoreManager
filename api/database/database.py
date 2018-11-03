@@ -15,7 +15,6 @@ class Database:
         admin_pass = generate_password_hash('adminpass')
         user_pass = generate_password_hash('userpass')
 
-
         create_commands = (
             """ CREATE TABLE IF NOT EXISTS users(
                 user_id serial PRIMARY KEY,
@@ -41,7 +40,7 @@ class Database:
                 product_sold INTEGER REFERENCES products(product_id) 
                 ON DELETE CASCADE
                 )""",
-            
+
             """ CREATE TABLE IF NOT EXISTS category(
                 cetegory_id serial PRIMARY KEY,
                 product_id INTEGER REFERENCES products(product_id) 
