@@ -33,7 +33,7 @@ def add_product():
                                 product_price=product_price,
                                 product_stock=product_stock)
         return jsonify({"Success": "The product has been added"}), 201
-        
+
     return jsonify({"Duplicate": "This product is already in the database"}), 200
 
 
@@ -64,6 +64,7 @@ def delete_a_product(product_id):
     product_cls.delete_a_product(product_id)
     return jsonify({"Deleted": "Product was deleted successfully"}), 200
 
+
 @prodbp.route('admin/products/category', methods=['POST'])
 @jwt_required
 def create_new_category():
@@ -75,10 +76,11 @@ def create_new_category():
 
     if product_cls.get_products_by_category(category_name):
         return jsonify({
-            "Message":"Category with name '{0}' already exist".format(category_name)})
+            "Message": "Category with name '{0}' already exist".format(category_name)})
 
     product_cls.create_category(category_name)
-    return jsonify({"Created":"The '{0}' category has been created"})
+    return jsonify({"Created": "The '{0}' category has been created"})
+
 
 @prodbp.route('admin/products/<product_id>', methods=['PUT'])
 @jwt_required
@@ -102,6 +104,7 @@ def edit_product(product_id):
     return jsonify({"Updated":
                     "Product was updated successfully"}), 200
 
+
 @prodbp.route('category', methods=['POST'])
 @jwt_required
 def add_category():
@@ -118,5 +121,44 @@ def add_category():
 
     if not product_cls.get_products_by_category(category_name):
         product_cls.create_category(category_name)
-        return jsonify({"Great":"New Category '{0}' created successfully".format(category_name)}), 201
-    return jsonify({"Duplicate":"Category already exists"}), 200
+        return jsonify({"Great": "New Category '{0}' created successfully".format(category_name)}), 201
+    return jsonify({"Duplicate": "Category already exists"}), 200
+
+
+@prodbp.route('category/<category_id>', methods=['GET'])
+@jwt_required
+def get_category_by_id(category_id):
+    if user_check() is False:
+        return jsonify({"Alert": "Only Admin can perform this action"}), 401
+    if not product_cls.get_category_by_id(category_id):
+        return jsonify({"Not Found": "The category was not found"})
+    return jsonify({"category": product_cls.get_category_by_id(category_id)})
+
+
+@prodbp.route('category', methods=['GET'])
+@jwt_required
+def get_all_categories():
+    if user_check() is False:
+        return jsonify({"Alert": "Only Admin can perform this action"}), 401
+
+    return jsonify({"categories": product_cls.get_all_categories()})
+
+
+@prodbp.route('category/<category_id>', methods=['POST'])
+@jwt_required
+def add_product_to_category(category_id):
+    data = request.json
+
+    product_id = int(data['product_id'])
+
+    if user_check() is False:
+        return jsonify({"Alert": "Only Admin can perform this action"}), 401
+
+    if not product_id or type(product_id) is not int:
+        abort(400)
+
+    if not product_cls.get_one_product_by_id(product_id):
+        return jsonify({"Not found": "The product was not found"})
+
+    product_cls.add_product_to_category(product_id, category_id)
+    return jsonify({"The product has been added to the category"})

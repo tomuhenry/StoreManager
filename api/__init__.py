@@ -27,17 +27,17 @@ def not_found(error):
 def server_error(error):
     return jsonify({'error': 'There has been a Server Error'}), 500
 
-# @app.errorhandler(TypeError)
-# def type_error(error):
-#     return jsonify({'error': 'Type Error has occured'})
+@app.errorhandler(TypeError)
+def type_error(error):
+    return jsonify({'error': 'Type Error has occured'})
 
 @app.errorhandler(ValueError)
 def value_error(error):
     return jsonify({'error': 'Wrong Value in the input'})
 
-@app.errorhandler(KeyError)
-def key_error(error):
-    return jsonify({'error': 'A key error has been detected, check your inputs'})
+# @app.errorhandler(KeyError)
+# def key_error(error):
+#     return jsonify({'error': 'A key error has been detected, check your inputs'})
 
 
 @app.route('/', methods=['GET'])

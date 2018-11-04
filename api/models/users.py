@@ -7,7 +7,7 @@ class Users():
 
     def add_user(self, name, email, password, rights):
         self.name = name
-        self.email = email 
+        self.email = email
         self.password = password
         self.rights = rights
 
@@ -17,7 +17,6 @@ class Users():
 
         self.database_cls.sql_insert(insert_user, details)
 
-
     def login_user(self, email):
 
         user_logged = "SELECT * FROM users WHERE email = '{0}';".format(email)
@@ -26,17 +25,17 @@ class Users():
 
     def get_all_users(self):
 
-        all_users = "SELECT * FROM users"
+        all_users = "SELECT user_id, name, email, rights FROM users"
 
         return self.database_cls.sql_fetch_all(all_users)
 
     def get_user_by_email(self, email):
-        get_user = "SELECT * FROM users WHERE email = '{0}';".format(email)
+        get_user = "SELECT user_id, name, email, rights FROM users WHERE email = '{0}';".format(email)
 
         return self.database_cls.sql_fetch_one(get_user)
 
     def get_user_by_id(self, user_id):
-        get_user = "SELECT * FROM users WHERE user_id = {0};".format(user_id)
+        get_user = "SELECT user_id, name, email, rights FROM users WHERE user_id = {0};".format(user_id)
 
         return self.database_cls.sql_fetch_one(get_user)
 
@@ -49,4 +48,3 @@ class Users():
         edit_user = """UPDATE users SET rights = {1} WHERE user_id = {0} """.format(
             user_id, rights)
         return self.database_cls.execute_query(edit_user)
-
