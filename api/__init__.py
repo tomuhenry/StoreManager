@@ -35,9 +35,9 @@ def type_error(error):
 def value_error(error):
     return jsonify({'error': 'Wrong Value in the input'})
 
-# @app.errorhandler(KeyError)
-# def key_error(error):
-#     return jsonify({'error': 'A key error has been detected, check your inputs'})
+@app.errorhandler(KeyError)
+def key_error(error):
+    return jsonify({'error': 'A key error has been detected, check your inputs'})
 
 
 @app.route('/', methods=['GET'])
