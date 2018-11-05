@@ -4,6 +4,7 @@ from api.database.database import Database
 class Products:
     def __init__(self):
         self.database_cls = Database()
+        self.database_cls.create_tables()
 
     def add_product(self, **kwargs):
         self.product_name = kwargs.get('product_name')

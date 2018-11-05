@@ -4,6 +4,7 @@ from api.database.database import Database
 class Users():
     def __init__(self):
         self.database_cls = Database()
+        self.database_cls.create_tables()
 
     def add_user(self, name, email, password, rights):
         self.name = name

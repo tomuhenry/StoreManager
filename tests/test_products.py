@@ -4,7 +4,6 @@ from api import app
 from api.database.database import Database
 
 sample_product = {
-    "category": "Kitchen Ware",
     "product_name": "Knife set",
     "product_specs": "5 pcs",
     "product_stock": 100,
@@ -16,7 +15,6 @@ edit_product = {
     "product_price": 1200
 }
 wrong_sample_product = {
-    "category": "Kitchen Ware",
     "product_name": "Knife set",
     "product_specs": "5 pcs",
     "product_stock": "100O",

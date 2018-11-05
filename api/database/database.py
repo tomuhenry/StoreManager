@@ -7,15 +7,15 @@ class Database:
 
     def __init__(self):
 
-        self.db_parameters = """dbname='d4eo92qumfels6' user='rydoowkieaxjhf' 
-                    password='451025a5501925f1a9c2dad02c65fdd1122b1cc2cfa8d94d021d86e059f74b51' 
-                    host = 'ec2-54-83-38-174.compute-1.amazonaws.com'"""
+        self.db_parameters = """dbname='storemanagerdb' user='postgres' 
+                                password='challenge3'"""
 
+        self.conn = psycopg2.connect(self.db_parameters)
+        self.curs = self.conn.cursor(cursor_factory=RealDictCursor)
+        self.admin_pass = generate_password_hash('adminpass')
+        self.user_pass = generate_password_hash('userpass')
 
-        conn = psycopg2.connect(self.db_parameters)
-        self.curs = conn.cursor()
-        admin_pass = generate_password_hash('adminpass')
-        user_pass = generate_password_hash('userpass')
+    def create_tables(self):
 
         create_commands = (
             """ CREATE TABLE IF NOT EXISTS users(
@@ -55,65 +55,50 @@ class Database:
                     SELECT 'Tomu Henry', 'admin@admin.com', '{0}' , TRUE)
                 AS tmp WHERE NOT EXISTS(SELECT email FROM users
                 WHERE email = 'admin@admin.com')
-                LIMIT 1;""".format(admin_pass),
+                LIMIT 1;""".format(self.admin_pass),
 
             """ INSERT INTO users(name, email, password, rights)
                 SELECT * FROM (
                     SELECT 'Not Admin', 'notadmin@notadmin.com', '{0}' , FALSE)
                 AS tmp WHERE NOT EXISTS(SELECT email FROM users
                 WHERE email = 'notadmin@notadmin.com')
-                LIMIT 1;""".format(user_pass)
+                LIMIT 1;""".format(self.user_pass)
 
         )
 
         for command in create_commands:
             self.curs.execute(command)
 
-        conn.commit()
+        self.conn.commit()
 
     def sql_insert(self, sql_queries, information):
         self.sql_queries = sql_queries
         self.information = information
-        conn = psycopg2.connect(self.db_parameters)
-        curs = conn.cursor(cursor_factory=RealDictCursor)
-        curs.execute(sql_queries, information)
-        conn.commit()
-        conn.close()
+        self.curs.execute(sql_queries, information)
+        self.conn.commit()
 
     def sql_fetch_all(self, sql_queries):
         self.sql_queries = sql_queries
-        conn = psycopg2.connect(self.db_parameters)
-        curs = conn.cursor(cursor_factory=RealDictCursor)
-        curs.execute(sql_queries)
-        fetched = curs.fetchall()
-        conn.close()
+        self.curs.execute(sql_queries)
+        fetched = self.curs.fetchall()
         return fetched
 
     def sql_fetch_one(self, sql_queries):
         self.sql_queries = sql_queries
-        conn = psycopg2.connect(self.db_parameters)
-        curs = conn.cursor(cursor_factory=RealDictCursor)
-        curs.execute(sql_queries)
-        fetched = curs.fetchone()
-        conn.commit()
-        conn.close()
+        self.curs.execute(sql_queries)
+        fetched = self.curs.fetchone()
+        self.conn.commit()
         return fetched
 
     def execute_query(self, sql_queries):
         self.sql_queries = sql_queries
-        conn = psycopg2.connect(self.db_parameters)
-        curs = conn.cursor(cursor_factory=RealDictCursor)
-        curs.execute(sql_queries)
-        conn.commit()
-        conn.close()
+        self.curs.execute(sql_queries)
+        self.conn.commit()
 
     @staticmethod
     def drop_table(command):
 
-        db_parameters = """dbname='d4eo92qumfels6' user='rydoowkieaxjhf' 
-                    password='451025a5501925f1a9c2dad02c65fdd1122b1cc2cfa8d94d021d86e059f74b51' 
-                    host = 'ec2-54-83-38-174.compute-1.amazonaws.com'"""
-
+        db_parameters = """dbname='storemanagerdb' user='postgres' password='challenge3'"""
         conn = psycopg2.connect(db_parameters)
         curs = conn.cursor()
         curs.execute(command)
