@@ -13,12 +13,13 @@ product_cls = Products()
 def add_product():
     data = request.json
 
-    product_name = data['product_name']
-    product_specs = data['product_specs']
+    product_name = str(data['product_name'])
+    product_specs = str(data['product_specs'])
     product_stock = int(data['product_stock'])
     product_price = int(data['product_price'])
+    prod_name = product_name.strip()
 
-    if not product_name or not product_price or not product_stock:
+    if not prod_name or not product_price or not product_stock:
         abort(400)
 
     if user_check() is False:
@@ -100,3 +101,22 @@ def edit_product(product_id):
 
     return jsonify({"Updated":
                     "Product was updated successfully"}), 200
+
+@prodbp.route('category', methods=['POST'])
+@jwt_required
+def add_category():
+    data = request.json
+
+    category_name = data['category_name']
+    cat_name = category_name.strip()
+
+    if user_check() is False:
+        return jsonify({"Alert": "Only Admin can perform this action"}), 401
+
+    if not cat_name or not category_name:
+        abort(400)
+
+    if not product_cls.get_products_by_category(category_name):
+        product_cls.create_category(category_name)
+        return jsonify({"Great":"New Category '{0}' created successfully".format(category_name)}), 201
+    return jsonify({"Duplicate":"Category already exists"}), 200

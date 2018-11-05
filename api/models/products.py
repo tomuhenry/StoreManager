@@ -44,14 +44,14 @@ class Products:
 
     def create_category(self, category_name):
         add_category = """ INSERT INTO category(category_name) VALUES(%s) """
-        details = (category_name)
+        details = (category_name,)
         return self.database_cls.sql_insert(add_category, details)
 
     def add_product_to_category(self, product_id, category_id):
         add_to_category = """ INSERT INTO
                             category(product_id) VALUES(%s) WHERE category_id = {0} """.format(category_id)
-        details = (category_id)
-        return self.database_cls.sql_insert(add_to_category, category_id)
+        details = (category_id,)
+        return self.database_cls.sql_insert(add_to_category, details)
 
     def get_products_by_category(self, category_name):
         get_category = " SELECT * FROM category WHERE category_name = '{0}';".format(
@@ -61,5 +61,6 @@ class Products:
     @staticmethod
     def get_all_products():
         database_cls = Database()
+        database_cls.create_tables()
         get_products = """SELECT * FROM products """
         return database_cls.sql_fetch_all(get_products)
