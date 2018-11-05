@@ -61,5 +61,6 @@ class Products:
     @staticmethod
     def get_all_products():
         database_cls = Database()
+        database_cls.create_tables()
         get_products = """SELECT * FROM products """
         return database_cls.sql_fetch_all(get_products)

@@ -34,7 +34,7 @@ def register_user():
         abort(400)
 
     if user_check() is False:
-        return jsonify({"Alert": "You're not Authorized to add user"})
+        return jsonify({"Alert": "You're not Authorized to add user"}), 401
 
     is_valid = validate_email(email)
 
@@ -77,7 +77,7 @@ def user_login():
 @jwt_required
 def get_all_users():
     if user_check() is False:
-        return jsonify({"Alert": "You're not Authorized to perform action"})
+        return jsonify({"Alert": "You're not Authorized to perform action"}), 401
     return jsonify({"Users": user_cls.get_all_users()})
 
 
@@ -85,7 +85,7 @@ def get_all_users():
 @jwt_required
 def get_user_by_email(email):
     if user_check() is False:
-        return jsonify({"Alert": "You're not Authorized to perform action"})
+        return jsonify({"Alert": "You're not Authorized to perform action"}), 401
     user = user_cls.get_user_by_email(email)
     if not user:
         abort(404)
@@ -96,7 +96,7 @@ def get_user_by_email(email):
 @jwt_required
 def get_user_by_id(user_id):
     if user_check() is False:
-        return jsonify({"Alert": "You're not Authorized to perform action"})
+        return jsonify({"Alert": "You're not Authorized to perform action"}), 401
     user = user_cls.get_user_by_id(user_id)
     if not user:
         abort(404)
