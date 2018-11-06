@@ -25,13 +25,20 @@ class Database:
                 password VARCHAR(300) NOT NULL,
                 rights BOOLEAN DEFAULT FALSE
                 )""",
+            
+            """ CREATE TABLE IF NOT EXISTS category(
+                category_id serial PRIMARY KEY,
+                category_name VARCHAR(80) NOT NULL
+                )""",
 
             """ CREATE TABLE IF NOT EXISTS products(
                 product_id serial PRIMARY KEY,
                 product_name VARCHAR(100) NOT NULL,
                 product_specs VARCHAR(50),
                 product_price INT NOT NULL,
-                product_stock INT NOT NULL
+                product_stock INT NOT NULL,
+                category_type INTEGER REFERENCES category(category_id) 
+                ON DELETE CASCADE
                 )""",
 
             """ CREATE TABLE IF NOT EXISTS sales(
@@ -39,15 +46,8 @@ class Database:
                 sale_quantity INT NOT NULL,
                 sale_price INTEGER,
                 date_sold DATE,
-                product_sold INTEGER REFERENCES products(product_id) 
+                product_sold INTEGER REFERENCES products(product_id)
                 ON DELETE CASCADE
-                )""",
-
-            """ CREATE TABLE IF NOT EXISTS category(
-                cetegory_id serial PRIMARY KEY,
-                product_id INTEGER REFERENCES products(product_id) 
-                ON DELETE CASCADE,
-                category_name VARCHAR(80) NOT NULL
                 )""",
 
             """ INSERT INTO users(name, email, password, rights)
