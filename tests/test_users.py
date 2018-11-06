@@ -13,12 +13,12 @@ sample_user_login = {
     "email": "admin@trueadmin.com",
     "password": "adminpassword"
 }
-
+database_cls = Database()
 
 class UserTestCase(TestCase):
 
     def setUp(self):
-        database_cls = Database()
+        database_cls.create_tables()
         self.headers = {'Content-Type': "application/json"}
         self.testclient = app.test_client()
         response = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
@@ -184,6 +184,5 @@ class UserTestCase(TestCase):
         self.assertIn(b"User Rights have been changed", response.data)
 
     def tearDown(self):
-        database_cls = Database()
         database_cls.drop_table("DROP TABLE users")
-        database_cls = Database()
+        database_cls.create_tables()

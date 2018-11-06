@@ -4,7 +4,6 @@ from api.database.database import Database
 class Products:
     def __init__(self):
         self.database_cls = Database()
-        self.database_cls.create_tables()
 
     def add_product(self, **kwargs):
         self.product_name = kwargs.get('product_name')
@@ -73,8 +72,6 @@ class Products:
             category_type)
         return self.database_cls.sql_fetch_all(get_category)
 
-    @staticmethod
-    def get_all_products():
-        database_cls = Database()
+    def get_all_products(self):
         get_products = """SELECT * FROM products """
-        return database_cls.sql_fetch_all(get_products)
+        return self.database_cls.sql_fetch_all(get_products)

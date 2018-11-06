@@ -7,7 +7,7 @@ class Database:
 
     def __init__(self):
 
-        self.db_parameters = """dbname='storemanagerdb' user='postgres' 
+        self.db_parameters = """dbname='storedb' user='postgres' 
                                 password='challenge3'"""
 
         self.conn = psycopg2.connect(self.db_parameters)
@@ -87,7 +87,6 @@ class Database:
         self.sql_queries = sql_queries
         self.curs.execute(sql_queries)
         fetched = self.curs.fetchone()
-        self.conn.commit()
         return fetched
 
     def execute_query(self, sql_queries):
@@ -97,8 +96,7 @@ class Database:
 
     @staticmethod
     def drop_table(command):
-
-        db_parameters = """dbname='storemanagerdb' user='postgres' password='challenge3'"""
+        db_parameters = """dbname='storedb' user='postgres' password='challenge3'"""
         conn = psycopg2.connect(db_parameters)
         curs = conn.cursor()
         curs.execute(command)

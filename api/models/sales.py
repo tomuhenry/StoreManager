@@ -4,7 +4,6 @@ from api.database.database import Database
 class Sales:
     def __init__(self):
         self.database_cls = Database()
-        self.database_cls.create_tables()
 
     def make_a_sale(self, sale_quantity, sale_price, date_sold, product_sold):
         self.sale_quantity = sale_quantity

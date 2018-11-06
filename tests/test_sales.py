@@ -19,6 +19,7 @@ class SalesTestCase(TestCase):
 
     def setUp(self):
         database_cls = Database()
+        database_cls.create_tables()
         self.headers = {'Content-Type': "application/json"}
         self.testclient = app.test_client()
         response_admin = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
@@ -104,4 +105,4 @@ class SalesTestCase(TestCase):
     def tearDown(self):
             database_cls = Database()
             database_cls.drop_table("DROP TABLE sales")
-            database_cls = Database()
+            database_cls.create_tables()
