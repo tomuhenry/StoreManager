@@ -10,7 +10,7 @@ class Database:
         self.db_parameters = """dbname='d4eo92qumfels6' user='rydoowkieaxjhf' 
                     password='451025a5501925f1a9c2dad02c65fdd1122b1cc2cfa8d94d021d86e059f74b51' 
                     host = 'ec2-54-83-38-174.compute-1.amazonaws.com'"""
-
+        
         self.admin_pass = generate_password_hash('adminpass')
         self.user_pass = generate_password_hash('userpass')
 
@@ -70,6 +70,7 @@ class Database:
             curs.execute(command)
 
         conn.commit()
+        conn.close()
 
     def sql_insert(self, sql_queries, information):
         self.sql_queries = sql_queries
