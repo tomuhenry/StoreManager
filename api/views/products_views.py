@@ -135,19 +135,21 @@ def add_category_to_product(product_id):
 
     product_cls.add_category_to_product(product_id, category_type)
 
-    return jsonify({"Added":"The product has been added to the category"}), 200
+    return jsonify({"Added": "The product has been added to the category"}), 200
+
 
 @prodbp.route('category/<category_id>', methods=['GET'])
 @jwt_required
 def get_category_by_id(category_id):
     if user_check() is False:
         return jsonify({"Alert": "Only Admin can perform this action"}), 401
-    
+
     my_category = product_cls.get_category_by_id(category_id)
 
     if not my_category:
         return jsonify({"Not found": "The category was not found"}), 404
     return jsonify({"Category": my_category}), 200
+
 
 @prodbp.route('products/category/<category_type>', methods=['GET'])
 @jwt_required
@@ -161,4 +163,4 @@ def get_products_by_category(category_type):
 
     get_products = product_cls.get_products_by_category(category_type)
 
-    return jsonify({"Products":get_products}), 200
+    return jsonify({"Products": get_products}), 200

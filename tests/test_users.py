@@ -15,6 +15,7 @@ sample_user_login = {
 }
 database_cls = Database()
 
+
 class UserTestCase(TestCase):
 
     def setUp(self):
@@ -22,10 +23,10 @@ class UserTestCase(TestCase):
         self.headers = {'Content-Type': "application/json"}
         self.testclient = app.test_client()
         response_admin = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
-                                        data=json.dumps({'email': 'admin@admin.com', 'password': 'adminpass'}))
+                                              data=json.dumps({'email': 'admin@admin.com', 'password': 'adminpass'}))
         self.access_token1 = json.loads(response_admin.data)['access_token']
         response_user = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
-                                        data=json.dumps({'email': 'notadmin@notadmin.com', 'password': 'userpass'}))
+                                             data=json.dumps({'email': 'notadmin@notadmin.com', 'password': 'userpass'}))
         self.access_token2 = json.loads(response_user.data)['access_token']
 
     def test_unauthorized_access(self):
@@ -150,7 +151,8 @@ class UserTestCase(TestCase):
         response = self.testclient.get(
             '/store-manager/api/v1/users', headers=self.headers)
         self.assertEqual(response.status_code, 401)
-        self.assertIn(b"You're not Authorized to perform action", response.data)
+        self.assertIn(
+            b"You're not Authorized to perform action", response.data)
 
     def test_get_user_by_email(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1

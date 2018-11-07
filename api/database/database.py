@@ -22,7 +22,7 @@ class Database:
                 password VARCHAR(300) NOT NULL,
                 rights BOOLEAN DEFAULT FALSE
                 )""",
-            
+
             """ CREATE TABLE IF NOT EXISTS category(
                 category_id serial PRIMARY KEY,
                 category_name VARCHAR(80) NOT NULL

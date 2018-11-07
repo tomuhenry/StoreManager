@@ -10,6 +10,7 @@ salebp = Blueprint('salebp', __name__)
 
 sales_cls = Sales()
 
+
 @salebp.route('/sales', methods=['POST'])
 @jwt_required
 def add_sales():
@@ -59,6 +60,7 @@ def get_all_sales():
     all_sale = sales_cls.get_all_sales()
     return jsonify({"Sales": all_sale}), 200
 
+
 @salebp.route('/sales/<sale_id>', methods=['GET'])
 @jwt_required
 def get_one_sale(sale_id):
@@ -69,6 +71,7 @@ def get_one_sale(sale_id):
     if not sale:
         return jsonify({"Not Found": "This sale has not been found"})
     return jsonify({"Sale": sale})
+
 
 @salebp.route('/sales/products/<product_id>', methods=['GET'])
 @jwt_required
@@ -82,4 +85,4 @@ def get_sale_by_product(product_id):
     if not sales:
         return jsonify({"Alert": "The product hasn't been sold yet"}), 404
 
-    return jsonify({"Sale": sales })
+    return jsonify({"Sale": sales})
