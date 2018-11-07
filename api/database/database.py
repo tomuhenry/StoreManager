@@ -7,11 +7,10 @@ class Database:
 
     def __init__(self):
 
-        self.db_parameters = """dbname='storemanagerdb' user='postgres' 
-                                password='challenge3'"""
+        self.db_parameters = """dbname='d4eo92qumfels6' user='rydoowkieaxjhf' 
+                    password='451025a5501925f1a9c2dad02c65fdd1122b1cc2cfa8d94d021d86e059f74b51' 
+                    host = 'ec2-54-83-38-174.compute-1.amazonaws.com'"""
 
-        self.conn = psycopg2.connect(self.db_parameters)
-        self.curs = self.conn.cursor(cursor_factory=RealDictCursor)
         self.admin_pass = generate_password_hash('adminpass')
         self.user_pass = generate_password_hash('userpass')
 
@@ -65,38 +64,49 @@ class Database:
                 LIMIT 1;""".format(self.user_pass)
 
         )
-
+        conn = psycopg2.connect(self.db_parameters)
+        curs = conn.cursor()
         for command in create_commands:
-            self.curs.execute(command)
+            curs.execute(command)
 
-        self.conn.commit()
+        conn.commit()
 
     def sql_insert(self, sql_queries, information):
         self.sql_queries = sql_queries
         self.information = information
-        self.curs.execute(sql_queries, information)
-        self.conn.commit()
+        conn = psycopg2.connect(self.db_parameters)
+        curs = conn.cursor()
+        curs.execute(sql_queries, information)
+        conn.commit()
 
     def sql_fetch_all(self, sql_queries):
         self.sql_queries = sql_queries
-        self.curs.execute(sql_queries)
-        fetched = self.curs.fetchall()
+        conn = psycopg2.connect(self.db_parameters)
+        curs = conn.cursor(cursor_factory=RealDictCursor)
+        curs.execute(sql_queries)
+        fetched = curs.fetchall()
         return fetched
 
     def sql_fetch_one(self, sql_queries):
         self.sql_queries = sql_queries
-        self.curs.execute(sql_queries)
-        fetched = self.curs.fetchone()
+        conn = psycopg2.connect(self.db_parameters)
+        curs = conn.cursor(cursor_factory=RealDictCursor)
+        curs.execute(sql_queries)
+        fetched = curs.fetchone()
         return fetched
 
     def execute_query(self, sql_queries):
         self.sql_queries = sql_queries
-        self.curs.execute(sql_queries)
-        self.conn.commit()
+        conn = psycopg2.connect(self.db_parameters)
+        curs = conn.cursor(cursor_factory=RealDictCursor)
+        curs.execute(sql_queries)
+        conn.commit()
 
     @staticmethod
     def drop_table(command):
-        db_parameters = """dbname='storemanagerdb' user='postgres' password='challenge3'"""
+        db_parameters = """dbname='d4eo92qumfels6' user='rydoowkieaxjhf' 
+                    password='451025a5501925f1a9c2dad02c65fdd1122b1cc2cfa8d94d021d86e059f74b51' 
+                    host = 'ec2-54-83-38-174.compute-1.amazonaws.com'"""
         conn = psycopg2.connect(db_parameters)
         curs = conn.cursor()
         curs.execute(command)
