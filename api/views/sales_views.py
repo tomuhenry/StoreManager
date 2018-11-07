@@ -9,7 +9,6 @@ from api.database.database import Database
 salebp = Blueprint('salebp', __name__)
 
 sales_cls = Sales()
-database_cls = Database()
 
 
 @salebp.route('/sales', methods=['POST'])
@@ -20,6 +19,7 @@ def add_sales():
     sale_quantity = int(data['sale_quantity'])
     product_sold = int(data['product_sold'])
     date_sold = datetime.now()
+    database_cls = Database()
 
     if not sale_quantity or not product_sold:
         abort(400)
@@ -60,6 +60,7 @@ def get_all_sales():
     all_sale = sales_cls.get_all_sales()
     return jsonify({"Sales": all_sale}), 200
 
+
 @salebp.route('/sales/<sale_id>', methods=['GET'])
 @jwt_required
 def get_one_sale(sale_id):
@@ -70,6 +71,7 @@ def get_one_sale(sale_id):
     if not sale:
         return jsonify({"Not Found": "This sale has not been found"})
     return jsonify({"Sale": sale})
+
 
 @salebp.route('/sales/products/<product_id>', methods=['GET'])
 @jwt_required
@@ -83,4 +85,4 @@ def get_sale_by_product(product_id):
     if not sales:
         return jsonify({"Alert": "The product hasn't been sold yet"}), 404
 
-    return jsonify({"Sale": sales })
+    return jsonify({"Sale": sales})

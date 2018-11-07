@@ -68,7 +68,7 @@ def user_login():
         return jsonify({"Alert": "Wrong password"}), 200
 
     access_token = create_access_token(
-        identity=email, expires_delta=timedelta(hours=2))
+        identity=email, expires_delta=timedelta(days=1))
 
     return jsonify({"access_token": access_token})
 
@@ -127,9 +127,10 @@ def edit_user(user_id):
     user = user_cls.get_user_by_id(user_id)
     if not user:
         return jsonify({"Not found": "User with ID '{0}' not found".format(user_id)}), 404
-        
+
     user_cls.edit_user_rights(user_id, rights)
     return jsonify({"Modified": "User Rights have been changed"}), 200
+
 
 @userbp.route('/logout')
 @jwt_required

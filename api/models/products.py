@@ -4,6 +4,7 @@ from api.database.database import Database
 class Products:
     def __init__(self):
         self.database_cls = Database()
+        self.database_cls.create_tables()
 
     def add_product(self, **kwargs):
         self.product_name = kwargs.get('product_name')
@@ -47,20 +48,31 @@ class Products:
         details = (category_name,)
         return self.database_cls.sql_insert(add_category, details)
 
-    def add_product_to_category(self, product_id, category_id):
-        add_to_category = """ INSERT INTO
-                            category(product_id) VALUES(%s) WHERE category_id = {0} """.format(category_id)
-        details = (category_id,)
-        return self.database_cls.sql_insert(add_to_category, details)
-
-    def get_products_by_category(self, category_name):
-        get_category = " SELECT * FROM category WHERE category_name = '{0}';".format(
-            category_name)
+    def get_category_by_name(self, category_name):
+        get_category = """ SELECT * FROM category 
+                WHERE category_name = '{0}' """.format(category_name)
         return self.database_cls.sql_fetch_all(get_category)
 
-    @staticmethod
-    def get_all_products():
-        database_cls = Database()
-        database_cls.create_tables()
+    def get_all_categories(self):
+        get_categories = """ SELECT * FROM category """
+        return self.database_cls.sql_fetch_all(get_categories)
+
+    def get_category_by_id(self, category_id):
+        get_categories = """ SELECT * FROM category 
+                WHERE category_id = {0} """.format(category_id)
+        return self.database_cls.sql_fetch_all(get_categories)
+
+    def add_category_to_product(self, product_id, category_type):
+        add_to_category = """UPDATE products SET category_type = {1} 
+                        WHERE product_id = {0} """.format(
+            product_id, category_type)
+        return self.database_cls.execute_query(add_to_category)
+
+    def get_products_by_category(self, category_type):
+        get_category = " SELECT * FROM products WHERE category_type = {0};".format(
+            category_type)
+        return self.database_cls.sql_fetch_all(get_category)
+
+    def get_all_products(self):
         get_products = """SELECT * FROM products """
-        return database_cls.sql_fetch_all(get_products)
+        return self.database_cls.sql_fetch_all(get_products)
