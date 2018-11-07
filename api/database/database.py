@@ -68,6 +68,7 @@ class Database:
             curs.execute(command)
 
         conn.commit()
+        conn.close()
 
     def sql_insert(self, sql_queries, information):
         self.sql_queries = sql_queries

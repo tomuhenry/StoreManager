@@ -116,6 +116,16 @@ class ProductsTestCase(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertIn(b"Product was updated successfully", response.data)
 
+    def test_edit_product_unauthorized(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token1
+        self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
+                             data=json.dumps(sample_product))
+        self.headers['Authorization'] = "Bearer " + self.access_token2
+        response = self.testclient.put('/store-manager/api/v1/admin/products/1', headers=self.headers,
+                                       data=json.dumps(edit_product))
+        self.assertEquals(response.status_code, 401)
+        self.assertIn(b"You're not Authorized to perform action", response.data)
+
     def test_edit_product_wrongly(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
         self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
@@ -142,6 +152,23 @@ class ProductsTestCase(TestCase):
             '/store-manager/api/v1/admin/products/1', headers=self.headers)
         self.assertEquals(response.status_code, 200)
         self.assertIn(b"Product was deleted successfully", response.data)
+
+    def test_delete_product_not_authorized(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token1
+        self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
+                             data=json.dumps(sample_product))
+        self.headers['Authorization'] = "Bearer " + self.access_token2
+        response = self.testclient.delete(
+            '/store-manager/api/v1/admin/products/1', headers=self.headers)
+        self.assertEquals(response.status_code, 401)
+        self.assertIn(b"You're not Authorized to perform action", response.data)
+
+    def test_delete_product_not_found(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token1
+        response = self.testclient.delete(
+            '/store-manager/api/v1/admin/products/2', headers=self.headers)
+        self.assertEquals(response.status_code, 404)
+        self.assertIn(b"Not Found", response.data)
 
     def test_delete_product_removed(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
