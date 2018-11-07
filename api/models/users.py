@@ -4,10 +4,11 @@ from api.database.database import Database
 class Users():
     def __init__(self):
         self.database_cls = Database()
+        self.database_cls.create_tables()
 
     def add_user(self, name, email, password, rights):
         self.name = name
-        self.email = email 
+        self.email = email
         self.password = password
         self.rights = rights
 
@@ -16,7 +17,6 @@ class Users():
         details = (name, email, password, rights)
 
         self.database_cls.sql_insert(insert_user, details)
-
 
     def login_user(self, email):
 
@@ -49,4 +49,3 @@ class Users():
         edit_user = """UPDATE users SET rights = {1} WHERE user_id = {0} """.format(
             user_id, rights)
         return self.database_cls.execute_query(edit_user)
-

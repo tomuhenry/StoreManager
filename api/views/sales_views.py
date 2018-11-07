@@ -9,8 +9,6 @@ from api.database.database import Database
 salebp = Blueprint('salebp', __name__)
 
 sales_cls = Sales()
-database_cls = Database()
-
 
 @salebp.route('/sales', methods=['POST'])
 @jwt_required
@@ -20,6 +18,7 @@ def add_sales():
     sale_quantity = int(data['sale_quantity'])
     product_sold = int(data['product_sold'])
     date_sold = datetime.now()
+    database_cls = Database()
 
     if not sale_quantity or not product_sold:
         abort(400)

@@ -15,8 +15,7 @@ class Database:
         self.user_pass = generate_password_hash('userpass')
 
     def create_tables(self):
-        conn = psycopg2.connect(self.db_parameters)
-        curs = conn.cursor()
+
         create_commands = (
             """ CREATE TABLE IF NOT EXISTS users(
                 user_id serial PRIMARY KEY,
@@ -25,13 +24,20 @@ class Database:
                 password VARCHAR(300) NOT NULL,
                 rights BOOLEAN DEFAULT FALSE
                 )""",
+            
+            """ CREATE TABLE IF NOT EXISTS category(
+                category_id serial PRIMARY KEY,
+                category_name VARCHAR(80) NOT NULL
+                )""",
 
             """ CREATE TABLE IF NOT EXISTS products(
                 product_id serial PRIMARY KEY,
                 product_name VARCHAR(100) NOT NULL,
                 product_specs VARCHAR(50),
                 product_price INT NOT NULL,
-                product_stock INT NOT NULL
+                product_stock INT NOT NULL,
+                category_type INTEGER REFERENCES category(category_id) 
+                ON DELETE CASCADE
                 )""",
 
             """ CREATE TABLE IF NOT EXISTS sales(
@@ -39,15 +45,8 @@ class Database:
                 sale_quantity INT NOT NULL,
                 sale_price INTEGER,
                 date_sold DATE,
-                product_sold INTEGER REFERENCES products(product_id) 
+                product_sold INTEGER REFERENCES products(product_id)
                 ON DELETE CASCADE
-                )""",
-
-            """ CREATE TABLE IF NOT EXISTS category(
-                cetegory_id serial PRIMARY KEY,
-                product_id INTEGER REFERENCES products(product_id) 
-                ON DELETE CASCADE,
-                category_name VARCHAR(80) NOT NULL
                 )""",
 
             """ INSERT INTO users(name, email, password, rights)
@@ -65,7 +64,8 @@ class Database:
                 LIMIT 1;""".format(self.user_pass)
 
         )
-
+        conn = psycopg2.connect(self.db_parameters)
+        curs = conn.cursor()
         for command in create_commands:
             curs.execute(command)
 
@@ -76,10 +76,9 @@ class Database:
         self.sql_queries = sql_queries
         self.information = information
         conn = psycopg2.connect(self.db_parameters)
-        curs = conn.cursor(cursor_factory=RealDictCursor)
+        curs = conn.cursor()
         curs.execute(sql_queries, information)
         conn.commit()
-        conn.close()
 
     def sql_fetch_all(self, sql_queries):
         self.sql_queries = sql_queries
@@ -87,7 +86,6 @@ class Database:
         curs = conn.cursor(cursor_factory=RealDictCursor)
         curs.execute(sql_queries)
         fetched = curs.fetchall()
-        conn.close()
         return fetched
 
     def sql_fetch_one(self, sql_queries):
@@ -96,8 +94,6 @@ class Database:
         curs = conn.cursor(cursor_factory=RealDictCursor)
         curs.execute(sql_queries)
         fetched = curs.fetchone()
-        conn.commit()
-        conn.close()
         return fetched
 
     def execute_query(self, sql_queries):
@@ -106,11 +102,9 @@ class Database:
         curs = conn.cursor(cursor_factory=RealDictCursor)
         curs.execute(sql_queries)
         conn.commit()
-        conn.close()
 
     @staticmethod
     def drop_table(command):
-
         db_parameters = """dbname='d4eo92qumfels6' user='rydoowkieaxjhf' 
                     password='451025a5501925f1a9c2dad02c65fdd1122b1cc2cfa8d94d021d86e059f74b51' 
                     host = 'ec2-54-83-38-174.compute-1.amazonaws.com'"""
