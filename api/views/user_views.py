@@ -95,9 +95,9 @@ def get_user_by_email(email):
 @userbp.route('/users/<int:user_id>', methods=['GET'])
 @jwt_required
 def get_user_by_id(user_id):
-    if user_check() is False:
-        return jsonify({"Alert": "You don't have permission for this action"}), 401
     user = user_cls.get_user_by_id(user_id)
+    if not user_check():
+        return jsonify({"Alert": "You don't have permission for this action"}), 401
     if not user:
         abort(404)
     return jsonify({"User": user})
