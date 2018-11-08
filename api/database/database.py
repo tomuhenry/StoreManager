@@ -71,15 +71,12 @@ class Database:
         conn.close()
 
     def sql_insert(self, sql_queries, information):
-        self.sql_queries = sql_queries
-        self.information = information
         conn = psycopg2.connect(self.db_parameters)
         curs = conn.cursor()
         curs.execute(sql_queries, information)
         conn.commit()
 
     def sql_fetch_all(self, sql_queries):
-        self.sql_queries = sql_queries
         conn = psycopg2.connect(self.db_parameters)
         curs = conn.cursor(cursor_factory=RealDictCursor)
         curs.execute(sql_queries)
@@ -87,7 +84,6 @@ class Database:
         return fetched
 
     def sql_fetch_one(self, sql_queries):
-        self.sql_queries = sql_queries
         conn = psycopg2.connect(self.db_parameters)
         curs = conn.cursor(cursor_factory=RealDictCursor)
         curs.execute(sql_queries)
@@ -95,7 +91,6 @@ class Database:
         return fetched
 
     def execute_query(self, sql_queries):
-        self.sql_queries = sql_queries
         conn = psycopg2.connect(self.db_parameters)
         curs = conn.cursor(cursor_factory=RealDictCursor)
         curs.execute(sql_queries)

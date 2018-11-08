@@ -1,7 +1,6 @@
-from unittest import TestCase
+from tests import BaseTestCase
 from flask import json
 from api import app
-from api.database.database import Database
 
 sample_user = {
     "name": "tom1 Admin",
@@ -13,13 +12,11 @@ sample_user_login = {
     "email": "admin@trueadmin.com",
     "password": "adminpassword"
 }
-database_cls = Database()
 
 
-class UserTestCase(TestCase):
+class UserTestCase(BaseTestCase):
 
     def setUp(self):
-        database_cls.create_tables()
         self.headers = {'Content-Type': "application/json"}
         self.testclient = app.test_client()
         response_admin = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
@@ -201,7 +198,3 @@ class UserTestCase(TestCase):
                                        data=json.dumps({"rights": "true"}))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"User Rights have been changed", response.data)
-
-    def tearDown(self):
-        database_cls.drop_table("DROP TABLE users")
-        database_cls.create_tables()
