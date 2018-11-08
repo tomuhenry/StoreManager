@@ -47,7 +47,7 @@ def view_one_product(product_id):
     product = product_cls.get_one_product_by_id(product_id)
     if not product:
         return jsonify({"Not Found":
-                        "The product with ID '{0}' was not found".format(product_id)}), 404
+                        "That product was not found"}), 404
 
     return jsonify({"Product": product}), 200
 
@@ -58,9 +58,10 @@ def delete_a_product(product_id):
     if user_check() is False:
         return jsonify({"Alert": "You're not Authorized to perform action"}), 401
 
-    if not product_cls.get_one_product_by_id(product_id):
+    product = product_cls.get_one_product_by_id(product_id)
+    if not product:
         return jsonify({"Not Found":
-                        "The product with ID '{0}' was not found".format(product_id)}), 404
+                        "The product does not exist"}), 404
     product_cls.delete_a_product(product_id)
     return jsonify({"Deleted": "Product was deleted successfully"}), 200
 
@@ -76,8 +77,8 @@ def edit_product(product_id):
 
     if user_check() is False:
         return jsonify({"Alert": "You're not Authorized to perform action"}), 401
-
-    if not product_cls.get_one_product_by_id(product_id):
+    edit_prod = product_cls.get_one_product_by_id(product_id)
+    if not edit_prod:
         return jsonify({"Not Found":
                         "The product with ID '{0}' was not found".format(product_id)}), 404
 
