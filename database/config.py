@@ -8,18 +8,15 @@ class MainConfig(object):
 
 
 class DevelopmentConfig(MainConfig):
-    # ENV = 'development'
     DEBUG = True
 
 
 class TestingConfig(MainConfig):
-    # ENV = 'testing'
     DEBUG = True
     TESTING = True
 
 
 class ProductionConfig(MainConfig):
-    # ENV = 'production'
     DEBUG = False
 
 

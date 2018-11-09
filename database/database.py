@@ -1,14 +1,11 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash
-# from api import app
 from database.config import app_config
 
 class Database:
 
     def __init__(self):
-
-        # self.db_parameters = "dbname='storemanagerdb' user='postgres' password='challenge3'"
 
         self.admin_pass = generate_password_hash('adminpass')
         self.user_pass = generate_password_hash('userpass')
@@ -93,15 +90,15 @@ class Database:
         conn = psycopg2.connect(self.db_parameters)
         curs = conn.cursor(cursor_factory=RealDictCursor)
         curs.execute(sql_queries)
-        fetched = curs.fetchall()
-        return fetched
+        all_fetched = curs.fetchall()
+        return all_fetched
 
     def sql_fetch_one(self, sql_queries):
         conn = psycopg2.connect(self.db_parameters)
         curs = conn.cursor(cursor_factory=RealDictCursor)
         curs.execute(sql_queries)
-        fetched = curs.fetchone()
-        return fetched
+        one_fetched = curs.fetchone()
+        return one_fetched
 
     def execute_query(self, sql_queries):
         conn = psycopg2.connect(self.db_parameters)
