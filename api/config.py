@@ -9,9 +9,6 @@ class MainConfig(object):
 
 class DevelopmentConfig(MainConfig):
     ENV = 'development'
-    DATABASE = 'storemanagerdb'
-    USER = 'postgres'
-    PASSWORD = 'challenge3'
     DEBUG = True
 
 
@@ -24,11 +21,6 @@ class TestingConfig(MainConfig):
 
 class ProductionConfig(MainConfig):
     ENV = 'production'
-    HOST = 'ec2-54-83-38-174.compute-1.amazonaws.com'
-    DATABASE = 'd4eo92qumfels6'
-    USER = 'rydoowkieaxjhf'
-    PASSWORD = '451025a5501925f1a9c2dad02c65fdd1122b1cc2cfa8d94d021d86e059f74b51'
-
 
 app_config = dict(
     development=DevelopmentConfig,

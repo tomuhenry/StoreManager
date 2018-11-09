@@ -1,15 +1,13 @@
 from flask import jsonify, request, abort, Blueprint
 from api.views.user_views import user_check
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import jwt_required
 from api.models.sales import Sales
 from api.views.products_views import product_cls
 from datetime import datetime
-from api.database.database import Database
 
 salebp = Blueprint('salebp', __name__)
 
 sales_cls = Sales()
-
 
 @salebp.route('/sales', methods=['POST'])
 @jwt_required
@@ -19,7 +17,6 @@ def add_sales():
     sale_quantity = int(data['sale_quantity'])
     product_sold = int(data['product_sold'])
     date_sold = datetime.now()
-    database_cls = Database()
 
     if not sale_quantity or not product_sold:
         abort(400)
@@ -42,10 +39,7 @@ def add_sales():
 
     sale_price = prod_price * sale_quantity
 
-    reduce_stock = """UPDATE products SET product_stock = {0} 
-                WHERE product_id = {1} """.format(new_stock, product_sold)
-
-    database_cls.execute_query(reduce_stock)
+    sales_cls.reduce_stock(new_stock, product_sold)
 
     sales_cls.make_a_sale(sale_quantity, sale_price, date_sold, product_sold)
 

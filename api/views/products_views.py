@@ -3,10 +3,9 @@ from api.models.products import Products
 from flask_jwt_extended import jwt_required
 from api.views.user_views import user_check
 
-prodbp = Blueprint('prod', __name__)
+prodbp = Blueprint('prodbp', __name__)
 
 product_cls = Products()
-
 
 @prodbp.route('admin/products', methods=['POST'])
 @jwt_required

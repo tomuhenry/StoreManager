@@ -1,4 +1,4 @@
-from api.database.database import Database
+from database.database import Database
 
 
 class Sales:
@@ -33,3 +33,8 @@ class Sales:
         get_prod_sale = """SELECT * FROM sales WHERE product_sold = {0}""".format(
             product_id)
         return self.database_cls.sql_fetch_all(get_prod_sale)
+
+    def reduce_stock(self, new_stock, product_sold):
+        reduced_stock = """UPDATE products SET product_stock = {0} 
+                WHERE product_id = {1} """.format(new_stock, product_sold)
+        return self.database_cls.execute_query(reduced_stock)
