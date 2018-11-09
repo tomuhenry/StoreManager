@@ -8,19 +8,20 @@ class MainConfig(object):
 
 
 class DevelopmentConfig(MainConfig):
-    ENV = 'development'
+    # ENV = 'development'
     DEBUG = True
 
 
 class TestingConfig(MainConfig):
-    ENV = 'testing'
-    DATABASE = 'storemanagerdb_test'
+    # ENV = 'testing'
     DEBUG = True
     TESTING = True
 
 
 class ProductionConfig(MainConfig):
-    ENV = 'production'
+    # ENV = 'production'
+    DEBUG = False
+
 
 app_config = dict(
     development=DevelopmentConfig,

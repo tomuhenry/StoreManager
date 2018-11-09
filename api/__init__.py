@@ -3,8 +3,10 @@ from api.views.user_views import userbp
 from api.views.sales_views import salebp
 from flask import jsonify, Flask
 from flask_jwt_extended import JWTManager
+from database.config import app_config
 
-app = Flask(__name__)
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_object(app_config)
 
 app.config['JWT_SECRET_KEY'] = 'SomeRaND0m5eC7eTK3Y'
 jwt = JWTManager(app)
