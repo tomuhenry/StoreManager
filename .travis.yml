@@ -11,6 +11,7 @@ install:
 
 before_script:
   - psql -c 'create database storemanagerdb;' -U postgres
+  - psql -c 'create database storemanagerdb_test;' -U postgres
 
 script:
   - py.test --cov api

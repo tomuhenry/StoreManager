@@ -1,19 +1,21 @@
-from api.views.user_views import userbp
 from api.views.products_views import prodbp
+from api.views.user_views import userbp
 from api.views.sales_views import salebp
 from flask import jsonify, Flask
 from flask_jwt_extended import JWTManager
+from database.config import app_config
 
-app = Flask(__name__)
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_object(app_config)
 
 app.config['JWT_SECRET_KEY'] = 'SomeRaND0m5eC7eTK3Y'
 jwt = JWTManager(app)
 
-app.register_blueprint(prodbp, url_prefix='/store-manager/api/v1')
-
 app.register_blueprint(salebp, url_prefix='/store-manager/api/v1')
 
 app.register_blueprint(userbp, url_prefix='/store-manager/api/v1')
+
+app.register_blueprint(prodbp, url_prefix='/store-manager/api/v1')
 
 @app.errorhandler(400)
 def bad_request(error):

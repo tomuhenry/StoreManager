@@ -1,7 +1,6 @@
-from unittest import TestCase
+from tests import BaseTestCase
 from flask import json
 from api import app
-from api.database.database import Database
 
 sample_product = {
     "product_name": "Knife set",
@@ -22,11 +21,9 @@ wrong_sample_product = {
 }
 
 
-class ProductsTestCase(TestCase):
+class ProductsTestCase(BaseTestCase):
 
     def setUp(self):
-        database_cls = Database()
-        database_cls.create_tables()
         self.headers = {'Content-Type': "application/json"}
         self.testclient = app.test_client()
         response_admin = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
@@ -51,18 +48,20 @@ class ProductsTestCase(TestCase):
     def test_add_same_product(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
         self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
-                                        data=json.dumps(sample_product))
+                             data=json.dumps(sample_product))
         response = self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
                                         data=json.dumps(sample_product))
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"This product is already in the database", response.data)
+        self.assertIn(
+            b"This product is already in the database", response.data)
 
     def test_add_product_unathorized(self):
         self.headers['Authorization'] = "Bearer " + self.access_token2
         response = self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
                                         data=json.dumps(sample_product))
         self.assertEqual(response.status_code, 401)
-        self.assertIn(b"You're not Authorized to perform action", response.data)
+        self.assertIn(
+            b"You're not Authorized to perform action", response.data)
 
     def test_add_product_wrongly(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
@@ -124,7 +123,8 @@ class ProductsTestCase(TestCase):
         response = self.testclient.put('/store-manager/api/v1/admin/products/1', headers=self.headers,
                                        data=json.dumps(edit_product))
         self.assertEquals(response.status_code, 401)
-        self.assertIn(b"You're not Authorized to perform action", response.data)
+        self.assertIn(
+            b"You're not Authorized to perform action", response.data)
 
     def test_edit_product_wrongly(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
@@ -161,7 +161,8 @@ class ProductsTestCase(TestCase):
         response = self.testclient.delete(
             '/store-manager/api/v1/admin/products/1', headers=self.headers)
         self.assertEquals(response.status_code, 401)
-        self.assertIn(b"You're not Authorized to perform action", response.data)
+        self.assertIn(
+            b"You're not Authorized to perform action", response.data)
 
     def test_delete_product_not_found(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
@@ -180,112 +181,3 @@ class ProductsTestCase(TestCase):
             '/store-manager/api/v1/admin/products/1', headers=self.headers)
         self.assertEquals(response.status_code, 404)
         self.assertIn(b"Not Found", response.data)
-
-    def test_add_new_category(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token1
-        response = self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
-                             data=json.dumps({"category_name":"Electronics"}))
-        self.assertEquals(response.status_code, 201)
-        self.assertIn(b"New Category 'Electronics' created successfully", response.data)
-
-    def test_add_duplicate_category(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token1
-        self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
-                             data=json.dumps({"category_name":"Electronics"}))
-        response = self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
-                             data=json.dumps({"category_name":"Electronics"}))
-        self.assertEquals(response.status_code, 200)
-        self.assertIn(b"Category already exists", response.data)
-
-    def test_add_new_category_unauthorized(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token2
-        response = self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
-                             data=json.dumps({"category_name":"Electronics"}))
-        self.assertEquals(response.status_code, 401)
-        self.assertIn(b"Only Admin can perform this action", response.data)
-
-    def test_get_all_categories(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token1
-        response = self.testclient.get('/store-manager/api/v1/category', headers=self.headers)
-        self.assertEquals(response.status_code, 200)
-        self.assertIn(b"Categories", response.data)
-
-    def test_get_all_categories_unauthorized(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token2
-        response = self.testclient.get('/store-manager/api/v1/category', headers=self.headers)
-        self.assertEquals(response.status_code, 401)
-        self.assertIn(b"Only Admin can perform this action", response.data)
-
-    def test_get_category_by_id(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token1
-        response = self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
-                             data=json.dumps({"category_name":"Electronics"}))
-        response = self.testclient.get('/store-manager/api/v1/category/1', headers=self.headers)
-        self.assertEquals(response.status_code, 200)
-        self.assertIn(b"Category", response.data)
-
-    def test_get_category_by_id_not_found(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token1
-        response = self.testclient.get('/store-manager/api/v1/category/1', headers=self.headers)
-        self.assertEquals(response.status_code, 404)
-        self.assertIn(b"The category was not found", response.data)
-
-    def test_add_category_to_product(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token1
-        self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
-                             data=json.dumps(sample_product))
-        self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
-                             data=json.dumps({"category_name": "Electronics"}))
-        response = self.testclient.put('/store-manager/api/v1/products/category/1', headers=self.headers,
-                                        data=json.dumps({"category_type": 1}))
-        self.assertEquals(response.status_code, 200)
-        self.assertIn(
-            b"The product has been added to the category", response.data)
-
-    def test_add_category_to_product_unauthorized(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token1
-        self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
-                             data=json.dumps(sample_product))
-        self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
-                             data=json.dumps({"category_name": "Electronics"}))
-        self.headers['Authorization'] = "Bearer " + self.access_token2
-        response = self.testclient.put('/store-manager/api/v1/products/category/1', headers=self.headers,
-                                        data=json.dumps({"category_type": 1}))
-        self.assertEquals(response.status_code, 401)
-        self.assertIn(b"Only Admin can perform this action", response.data)
-
-    def test_add_category_to_product_not_found(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token1
-        self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
-                             data=json.dumps({"category_name": "Electronics"}))
-        response = self.testclient.put('/store-manager/api/v1/products/category/1', headers=self.headers,
-                                        data=json.dumps({"category_type": 1}))
-        self.assertEquals(response.status_code, 404)
-        self.assertIn(b"The product was not found", response.data)
-
-    def test_get_products_by_category(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token1
-        self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
-                             data=json.dumps({"category_name": "Electronics"}))
-        response = self.testclient.get('/store-manager/api/v1/products/category/1', headers=self.headers)
-        self.assertEquals(response.status_code, 200)
-        self.assertIn(b"Products", response.data)
-
-    def test_get_products_by_category_not_found(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token1
-        response = self.testclient.get('/store-manager/api/v1/products/category/1', headers=self.headers)
-        self.assertEquals(response.status_code, 404)
-        self.assertIn(b"The category was not found", response.data)
-
-    def test_get_products_by_category_unauthorized(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token2
-        response = self.testclient.get('/store-manager/api/v1/products/category/1', headers=self.headers)
-        self.assertEquals(response.status_code, 401)
-        self.assertIn(b"Only Admin can perform this action", response.data)
-
-    def tearDown(self):
-        database_cls = Database()
-        database_cls.drop_table("DROP TABLE sales")
-        database_cls.drop_table("DROP TABLE products")
-        database_cls.drop_table("DROP TABLE category")
-        database_cls.create_tables()
