@@ -198,3 +198,19 @@ class UserTestCase(BaseTestCase):
                                        data=json.dumps({"rights": "true"}))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"User Rights have been changed", response.data)
+
+    def test_user_logout(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token1
+        response = self.testclient.delete(
+            '/store-manager/api/v1/logout', headers=self.headers)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"You have logged out successfully", response.data)
+
+    def test_action_after_logout(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token1
+        self.testclient.delete(
+            '/store-manager/api/v1/logout', headers=self.headers)
+        response = self.testclient.get(
+            '/store-manager/api/v1/users', headers=self.headers)
+        self.assertEqual(response.status_code, 401)
+        self.assertIn(b"Token has been revoked", response.data)

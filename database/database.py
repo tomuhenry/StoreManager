@@ -3,6 +3,7 @@ from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash
 from database.config import app_config
 
+
 class Database:
 
     def __init__(self):
@@ -20,7 +21,6 @@ class Database:
             self.db_parameters = """dbname='d4eo92qumfels6' user='rydoowkieaxjhf'
                 host = 'ec2-54-83-38-174.compute-1.amazonaws.com' 
                 password='451025a5501925f1a9c2dad02c65fdd1122b1cc2cfa8d94d021d86e059f74b51'"""
-        
 
     def create_tables(self):
 
@@ -55,6 +55,10 @@ class Database:
                 date_sold DATE,
                 product_sold INTEGER REFERENCES products(product_id)
                 ON DELETE CASCADE
+                )""",
+
+            """ CREATE TABLE IF NOT EXISTS tokens(
+                ex_tokens VARCHAR(300)
                 )""",
 
             """ INSERT INTO users(name, email, password, rights)

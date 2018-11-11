@@ -51,3 +51,12 @@ class Users():
         edit_user = """UPDATE users SET rights = {1} WHERE user_id = {0} """.format(
             user_id, rights)
         return self.database_cls.execute_query(edit_user)
+
+    def check_token(self, jti):
+        ex_tokens = "SELECT * FROM tokens WHERE ex_tokens = '{0}'".format(jti)
+        return self.database_cls.sql_fetch_all(ex_tokens)
+
+    def add_token(self, jti):
+        add_token = "INSERT INTO tokens(ex_tokens) VALUES(%s)"
+        details = (jti,)
+        return self.database_cls.sql_insert(add_token, details)

@@ -1,8 +1,8 @@
 from flask import jsonify, request, abort, Blueprint
 from api.models.users import Users
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import (
-    jwt_required, create_access_token, get_jwt_identity)
+from flask_jwt_extended import (get_raw_jwt, jwt_required,
+                                create_access_token, get_jwt_identity)
 from validate_email import validate_email
 from datetime import timedelta
 
@@ -127,11 +127,14 @@ def edit_user(user_id):
     user = user_cls.get_user_by_id(user_id)
     if not user:
         return jsonify({"Not found": "User with ID '{0}' not found".format(user_id)}), 404
-        
+
     user_cls.edit_user_rights(user_id, rights)
     return jsonify({"Modified": "User Rights have been changed"}), 200
 
-@userbp.route('/logout')
+
+@userbp.route('/logout', methods=['DELETE'])
 @jwt_required
 def logout():
-    pass
+    jti = get_raw_jwt()['jti']
+    user_cls.add_token(jti)
+    return jsonify({"Bye": "You have logged out successfully"}), 200
