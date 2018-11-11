@@ -113,7 +113,7 @@ class Database:
     def drop_table(self, tab_name):
         conn = psycopg2.connect(self.db_parameters)
         curs = conn.cursor()
-        command = "DROP TABLE IF EXISTS {}".format(tab_name)
+        command = "DROP TABLE IF EXISTS {} CASCADE".format(tab_name)
         curs.execute(command)
         conn.commit()
         conn.close()
