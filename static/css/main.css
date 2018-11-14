@@ -1,0 +1,110 @@
+@import "media.css";
+@import "login.css";
+@import "stock-table.css";
+@import "cart.css";
+
+body{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 90%;
+    height: 95%;
+    background: #d5f1fad3;
+}
+h1{
+    margin: 5px;
+    padding: 5px;
+    text-align: center;
+    font-size: 35px;
+    color: #ffffff;
+    text-shadow: 3px 3px 5px #000000;
+}
+h2{
+    margin: 5px;
+    padding: 5px;
+    text-align: center;
+    font-size: 25px;
+}
+
+#sidebar {
+    position: fixed;
+    width: 200px;
+    height: 100%;
+    background: #53a1f0ec;
+    left: -200px;
+    transition: all 400ms linear;
+}
+
+#sidebar.active{
+    left: 0px;
+}
+
+#sidebar ul li{
+    text-align: center;
+    list-style: none;
+    padding: 15px 10px;
+    border-bottom: 1px solid #000;
+    cursor: pointer;
+}
+
+#sidebar .toggle-btn{
+    position: absolute;
+    left: 205px;
+    top: 15px;
+    cursor: pointer;
+}
+#sidebar .toggle-btn span{
+    display: block;
+    width: 30px;
+    height: 5px;
+    background: #151719;
+    margin: 5px 0px;
+}
+
+#sidebar a{
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 120%;
+    padding: 15px;
+}
+#sidebar ul li:hover{
+    background: #125394;
+}
+
+.main-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.main-footer p {
+    font-size: 15px;
+    text-align: center;
+    font-weight: bold;
+    margin: 1% auto;
+    color: #000000;
+}
+
+.flex-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.flex-container div{
+    display: grid;
+    border: 1px #cccccc solid;
+    padding: 40px 25px;
+    border-radius: 10px;
+    flex-basis: 35%;
+    min-height: 50px;
+    margin: 3px;
+    background: #000000e7;
+    color: #ffffff;
+    top: 40%;
+    left: 40%;
+    -ms-flex-align: center;
+}
