@@ -3,11 +3,18 @@ language: python
 python:
   - "3.6.5"
 
+services:
+  - postgresql
+
 install:
   - pip install -r requirements.txt
 
+before_script:
+  - psql -c 'create database storemanagerdb;' -U postgres
+  - psql -c 'create database storemanagerdb_test;' -U postgres
+
 script:
-  - py.test --cov api/views
+  - py.test --cov api
 
 after_success:
   - coveralls

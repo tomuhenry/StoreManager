@@ -1,99 +1,140 @@
-from flask import jsonify, request, abort, Blueprint, session
-from api.views.functions import Users, users
+from flask import jsonify, request, abort, Blueprint
+from api.models.users import Users
 from werkzeug.security import generate_password_hash, check_password_hash
-from functools import wraps
+from flask_jwt_extended import (get_raw_jwt, jwt_required,
+                                create_access_token, get_jwt_identity)
+from validate_email import validate_email
+from datetime import timedelta
 
 userbp = Blueprint('userbp', __name__)
 
-
-# Login required decorator
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            return jsonify({"Unauthorized":"You need to login first"})
-
-        return wrap
+user_cls = Users()
 
 
-@userbp.route('/signup', methods=['POST'])
+def user_check():
+    current_user = get_jwt_identity()
+    user = user_cls.get_user_by_email(current_user)
+    if user['rights'] == True:
+        return True
+    else:
+        return False
+
+
+@userbp.route('/auth/signup', methods=['POST'])
+@jwt_required
 def register_user():
     data = request.json
 
     email = data['email']
     name = data['name']
     password = generate_password_hash(data['password'], method='sha256')
-    rights = data['rights']
+    rights = bool(data['rights'])
 
-    if not email or not name or not password or not rights:
+    if not email or not name or not password:
         abort(400)
 
-    user_cls = Users(email, name, password, rights)
+    if user_check() is False:
+        return jsonify({"Alert": "You're not Authorized to add user"}), 401
 
-    if user_cls.validate_email() is False:
-        return jsonify({"Error": "Invalid email"}), 200
+    is_valid = validate_email(email)
 
-    if user_cls.check_duplicate() is False:
-        return jsonify({"Failed": "User with email '{0}' already exists".format(email)}), 200
+    if not is_valid:
+        return jsonify({"Alert": "Invalid email address"}), 200
 
-    user_cls.add_user()
-    return jsonify({"Success": "User with name '{0}' has been added".format(name)}), 200
+    if not user_cls.get_user_by_email(email):
+        user_cls.add_user(name, email, password, rights)
+        return jsonify({"Message": "User '{0}' registered successfully".format(name)}), 201
+    return jsonify({"Alert": "Email '{0}' already exists".format(email)}), 200
 
 
-@userbp.route('/login', methods=['POST', 'GET'])
+@userbp.route('/auth/login', methods=['POST'])
 def user_login():
-    
-    if request.method == 'POST':
-        data = request.json
+    data = request.json
 
-        email = data['email']
-        password = data['password']
+    email = data['email']
+    user_password = data['password']
 
-        if not email or not password:
-            abort(400)
+    if not email or not user_password:
+        abort(400)
 
-        user = [user for user in users if user['email'] == email]
+    logged_user = user_cls.login_user(email)
 
-        if len(user) == 0:
-            return jsonify({"Failure": "Wrong login information"}), 200
+    if not logged_user:
+        return jsonify({"Alert": "Wrong email address"}), 200
 
-        compare_password = check_password_hash(user[0]['password'], password)
+    password = check_password_hash(logged_user['password'], user_password)
 
-        if compare_password is True:
-            session['logged_in'] = True
-            return jsonify({"Success": "User Logged in successfuly"}), 200
+    if not password:
+        return jsonify({"Alert": "Wrong password"}), 200
 
-        elif compare_password is False:
-            return jsonify({"Failure": "Wrong login information"}), 200
+    access_token = create_access_token(
+        identity=email, expires_delta=timedelta(days=1))
 
-@userbp.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    return jsonify({"Message": "You have logged out"})
+    return jsonify({"access_token": access_token})
+
 
 @userbp.route('/users', methods=['GET'])
+@jwt_required
 def get_all_users():
-    return jsonify({"Users": users})
+    if user_check() is False:
+        return jsonify({"Alert": "You're not Authorized to perform action"}), 401
+    return jsonify({"Users": user_cls.get_all_users()})
 
 
 @userbp.route('/users/<email>', methods=['GET'])
-def get_user_by_id(email):
-    user = [user for user in users if email in user.values()]
-    if len(user) == 0:
-        return jsonify({"Not Found": "No user with email '{0}' in the database".format(email)}), 404
+@jwt_required
+def get_user_by_email(email):
+    if user_check() is False:
+        return jsonify({"Alert": "Only admin can perform this action"}), 401
+    user = user_cls.get_user_by_email(email)
+    if not user:
+        abort(404)
+    return jsonify({"User": user})
 
-    else:
-        return jsonify({"User": user}), 200
+
+@userbp.route('/users/<int:user_id>', methods=['GET'])
+@jwt_required
+def get_user_by_id(user_id):
+    user = user_cls.get_user_by_id(user_id)
+    if not user_check():
+        return jsonify({"Alert": "You don't have permission for this action"}), 401
+    if not user:
+        abort(404)
+    return jsonify({"User": user})
 
 
 @userbp.route('/users/<email>', methods=['DELETE'])
+@jwt_required
 def delete_user(email):
-    user = [user for user in users if user['email'] == email]
-    if len(user) < 1:
-        return jsonify({"Alert": "User with email '{0}' not in the list".format(email)}), 404
+    if user_check() is False:
+        return jsonify({"Alert": "You're not Authorized to perform action"})
+    user = user_cls.get_user_by_email(email)
+    if not user:
+        return jsonify({"Not found": "User with email '{0}' not found".format(email)}), 404
+    user_cls.delete_user_by_email(email)
+    return jsonify({"Deleted": "User has been deleted"}), 202
 
-    else:
-        users.remove(user[0])
-        return jsonify({"Deleted": "User '{0}' has been deleted".format(user[0]['name'])}), 200
+
+@userbp.route('/users/<user_id>', methods=['PUT'])
+@jwt_required
+def edit_user(user_id):
+    data = request.json
+    rights = data['rights']
+
+    if user_check() is False:
+        return jsonify({"Alert": "You're not Authorized to perform action"})
+
+    user = user_cls.get_user_by_id(user_id)
+    if not user:
+        return jsonify({"Not found": "User with ID '{0}' not found".format(user_id)}), 404
+
+    user_cls.edit_user_rights(user_id, rights)
+    return jsonify({"Modified": "User Rights have been changed"}), 200
+
+
+@userbp.route('/logout', methods=['DELETE'])
+@jwt_required
+def logout():
+    jti = get_raw_jwt()['jti']
+    user_cls.add_token(jti)
+    return jsonify({"Bye": "You have logged out successfully"}), 200
