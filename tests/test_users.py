@@ -173,7 +173,7 @@ class UserTestCase(BaseTestCase):
         response = self.testclient.get(
             '/store-manager/api/v1/users/email', headers=self.headers)
         self.assertEqual(response.status_code, 404)
-        self.assertIn(b"Information could not be found", response.data)
+        self.assertIn(b"Not Found", response.data)
 
     def test_delete(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1

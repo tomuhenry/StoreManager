@@ -78,7 +78,8 @@ def user_login():
 def get_all_users():
     if user_check() is False:
         return jsonify({"Alert": "You're not Authorized to perform action"}), 401
-    return jsonify({"Users": user_cls.get_all_users()})
+    all_users = user_cls.get_all_users()
+    return jsonify(all_users)
 
 
 @userbp.route('/users/<email>', methods=['GET'])
@@ -88,8 +89,8 @@ def get_user_by_email(email):
         return jsonify({"Alert": "Only admin can perform this action"}), 401
     user = user_cls.get_user_by_email(email)
     if not user:
-        abort(404)
-    return jsonify({"User": user})
+        return jsonify({"Not Found": "No user with email '{0}'".format(email)}), 404
+    return jsonify(user)
 
 
 @userbp.route('/users/<int:user_id>', methods=['GET'])
