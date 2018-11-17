@@ -142,7 +142,7 @@ class UserTestCase(BaseTestCase):
         response = self.testclient.get(
             '/store-manager/api/v1/users', headers=self.headers)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Users", response.data)
+        self.assertIn(b"email", response.data)
 
     def test_get_all_users_unauthorized(self):
         self.headers['Authorization'] = "Bearer " + self.access_token2

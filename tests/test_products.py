@@ -42,7 +42,7 @@ class ProductsTestCase(BaseTestCase):
     def test_add_product(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
         response = self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
-                                        data=json.dumps(sample_product))
+                                            data=json.dumps(sample_product))
         self.assertEqual(response.status_code, 201)
         self.assertIn(b"The product has been added", response.data)
 
@@ -88,9 +88,12 @@ class ProductsTestCase(BaseTestCase):
         self.assertIn(b"Wrong Value in the input", response.data)
 
     def test_get_all_products(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token1
+        self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
+                                        data=json.dumps(sample_product))
         response = self.testclient.get('/store-manager/api/v1/admin/products')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Products", response.data)
+        self.assertIn(b"product_name", response.data)
 
     def test_get_one_product(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
@@ -99,7 +102,7 @@ class ProductsTestCase(BaseTestCase):
         response = self.testclient.get(
             '/store-manager/api/v1/admin/products/1')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Product", response.data)
+        self.assertIn(b"product_name", response.data)
 
     def test_get_one_product_not_found(self):
         response = self.testclient.get(

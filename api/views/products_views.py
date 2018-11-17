@@ -38,7 +38,7 @@ def add_product():
 
 @prodbp.route('admin/products', methods=['GET'])
 def view_all_products():
-    return jsonify({"Products": product_cls.get_all_products()}), 200
+    return jsonify(product_cls.get_all_products()), 200
 
 
 @prodbp.route('admin/products/<int:product_id>', methods=['GET'])
@@ -114,7 +114,8 @@ def get_all_categories():
     if user_check() is False:
         return jsonify({"Alert": "Only Admin can perform this action"}), 401
 
-    return jsonify({"Categories": product_cls.get_all_categories()}), 200
+    all_categories = product_cls.get_all_categories()
+    return jsonify(all_categories), 200
 
 
 @prodbp.route('products/category/<product_id>', methods=['PUT'])
@@ -148,7 +149,7 @@ def get_category_by_id(category_id):
 
     if not my_category:
         return jsonify({"Not found": "The category was not found"}), 404
-    return jsonify({"Category": my_category}), 200
+    return jsonify(my_category), 200
 
 
 @prodbp.route('products/category/<category_type>', methods=['GET'])
@@ -163,4 +164,4 @@ def get_products_by_category(category_type):
 
     get_products = product_cls.get_products_by_category(category_type)
 
-    return jsonify({"Products": get_products}), 200
+    return jsonify(get_products), 200

@@ -60,11 +60,14 @@ class SalesTestCase(BaseTestCase):
         self.assertIn(b"Not enough items in stock", response.data)
 
     def test_view_all_sales(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token2
+        self.testclient.post('/store-manager/api/v1/sales', headers=self.headers,
+                                        data=json.dumps(sample_sale))
         self.headers['Authorization'] = "Bearer " + self.access_token1
         response = self.testclient.get(
             '/store-manager/api/v1/sales', headers=self.headers)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Sales", response.data)
+        self.assertIn(b"sale_quantity", response.data)
 
     def test_view_all_sales_not_authorized(self):
         self.headers['Authorization'] = "Bearer " + self.access_token2

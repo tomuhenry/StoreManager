@@ -100,7 +100,7 @@ def get_user_by_id(user_id):
         return jsonify({"Alert": "You don't have permission for this action"}), 401
     if not user:
         abort(404)
-    return jsonify({"User": user})
+    return jsonify(user)
 
 
 @userbp.route('/users/<email>', methods=['DELETE'])
