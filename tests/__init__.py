@@ -1,5 +1,7 @@
 from unittest import TestCase
 from database.database import Database
+from api import app
+app.config['TESTING'] = True
 
 database_cls = Database()
 

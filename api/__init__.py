@@ -5,10 +5,13 @@ from flask import jsonify, Flask
 from flask_jwt_extended import JWTManager
 from database.config import app_config
 from api.models.users import Users
+from flask_cors import CORS
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object(app_config)
+CORS(app)
 
+app.config['SECRET_KEY'] = 'SWeDFGEDgtedFGDg#$@3542DFFfgcs'
 app.config['JWT_SECRET_KEY'] = 'SomeRaND0m5eC7eTK3Y'
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
