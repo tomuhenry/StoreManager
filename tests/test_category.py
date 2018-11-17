@@ -1,6 +1,7 @@
 from tests import BaseTestCase
 from flask import json
 from api import app
+app.config['TESTING'] = True
 
 sample_product = {
     "product_name": "Knife set",

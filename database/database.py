@@ -11,13 +11,13 @@ class Database:
         self.admin_pass = generate_password_hash('adminpass')
         self.user_pass = generate_password_hash('userpass')
 
-        if app_config['TESTING']:
+        if app_config['testing']:
             self.db_parameters = """dbname='storemanagerdb_test' user='postgres' password='challenge3'"""
 
-        if app_config['DEVELOPMENT']:
+        if app_config['development']:
             self.db_parameters = """dbname='storemanagerdb' user='postgres' password='challenge3'"""
 
-        if app_config['PRODUCTION']:
+        if app_config['production']:
             self.db_parameters = """dbname='d4eo92qumfels6' user='rydoowkieaxjhf'
                 host = 'ec2-54-83-38-174.compute-1.amazonaws.com' 
                 password='451025a5501925f1a9c2dad02c65fdd1122b1cc2cfa8d94d021d86e059f74b51'"""
