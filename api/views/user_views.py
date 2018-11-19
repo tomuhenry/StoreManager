@@ -70,7 +70,9 @@ def user_login():
     access_token = create_access_token(
         identity=email, expires_delta=timedelta(days=1))
 
-    return jsonify({"access_token": access_token})
+    if logged_user['rights'] == True:
+        return jsonify({"admin_token": access_token})
+    return jsonify({"user_token": access_token})
 
 
 @userbp.route('/users', methods=['GET'])
