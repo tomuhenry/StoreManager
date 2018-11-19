@@ -18,10 +18,10 @@ class CategoryTestCase(BaseTestCase):
         self.testclient = app.test_client()
         response_admin = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
                                               data=json.dumps({'email': 'admin@admin.com', 'password': 'adminpass'}))
-        self.access_token1 = json.loads(response_admin.data)['access_token']
+        self.access_token1 = json.loads(response_admin.data)['admin_token']
         response_user = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
                                              data=json.dumps({'email': 'notadmin@notadmin.com', 'password': 'userpass'}))
-        self.access_token2 = json.loads(response_user.data)['access_token']
+        self.access_token2 = json.loads(response_user.data)['user_token']
 
     def test_add_new_category(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
