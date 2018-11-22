@@ -6,17 +6,18 @@ class Sales:
         self.database_cls = Database()
         self.database_cls.create_tables()
 
-    def make_a_sale(self, sale_quantity, sale_price, date_sold, product_sold):
+    def make_a_sale(self, sale_quantity, sale_price, date_sold, product_sold, product_name):
         self.sale_quantity = sale_quantity
         self.sale_price = sale_price
         self.date_sold = date_sold
         self.product_sold = product_sold
+        self.product_name = product_name
 
         insert_sale = """INSERT INTO
                             sales(sale_quantity, sale_price, date_sold,
-                            product_sold) VALUES(%s, %s, %s, %s)"""
+                            product_sold, product_name) VALUES(%s, %s, %s, %s, %s)"""
 
-        details = (sale_quantity, sale_price, date_sold, product_sold)
+        details = (sale_quantity, sale_price, date_sold, product_sold, product_name)
 
         self.database_cls.sql_insert(insert_sale, details)
 
@@ -35,6 +36,6 @@ class Sales:
         return self.database_cls.sql_fetch_all(get_prod_sale)
 
     def reduce_stock(self, new_stock, product_sold):
-        reduced_stock = """UPDATE products SET product_stock = {0} 
+        reduced_stock = """UPDATE products SET product_stock = {0}
                 WHERE product_id = {1} """.format(new_stock, product_sold)
         return self.database_cls.execute_query(reduced_stock)
