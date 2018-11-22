@@ -48,7 +48,7 @@ def view_one_product(product_id):
         return jsonify({"Not Found":
                         "That product was not found"}), 404
 
-    return jsonify({"Product": product}), 200
+    return jsonify(product), 200
 
 
 @prodbp.route('admin/products/<product_id>', methods=['DELETE'])
