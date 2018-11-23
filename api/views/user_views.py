@@ -87,8 +87,6 @@ def get_all_users():
 @userbp.route('/users/<email>', methods=['GET'])
 @jwt_required
 def get_user_by_email(email):
-    if user_check() is False:
-        return jsonify({"Alert": "Only admin can perform this action"}), 401
     user = user_cls.get_user_by_email(email)
     if not user:
         return jsonify({"Not Found": "No user with email '{0}'".format(email)}), 404
