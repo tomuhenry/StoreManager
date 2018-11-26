@@ -52,9 +52,10 @@ class Database:
                 sale_id serial PRIMARY KEY,
                 sale_quantity INT NOT NULL,
                 sale_price INTEGER,
-                date_sold DATE,
-                product_sold INTEGER REFERENCES products(product_id)
-                ON DELETE CASCADE
+                date_sold VARCHAR(50),
+                product_sold INT REFERENCES products(product_id)
+                ON DELETE CASCADE,
+                product_name VARCHAR(100)
                 )""",
 
             """ CREATE TABLE IF NOT EXISTS tokens(

@@ -16,7 +16,7 @@ def add_sales():
 
     sale_quantity = int(data['sale_quantity'])
     product_sold = int(data['product_sold'])
-    date_sold = datetime.now()
+    date_sold = str(datetime.now())
 
     if not sale_quantity or not product_sold:
         abort(400)
@@ -31,6 +31,7 @@ def add_sales():
 
     prod_stock = product['product_stock']
     prod_price = product['product_price']
+    product_name = product['product_name']
 
     if sale_quantity > prod_stock or prod_stock == 0:
         return jsonify({"Sorry": "Not enough items in stock"}), 200
@@ -41,7 +42,7 @@ def add_sales():
 
     sales_cls.reduce_stock(new_stock, product_sold)
 
-    sales_cls.make_a_sale(sale_quantity, sale_price, date_sold, product_sold)
+    sales_cls.make_a_sale(sale_quantity, sale_price, date_sold, product_sold, product_name)
 
     return jsonify({"Success": "The Sale has been made"}), 201
 
@@ -52,7 +53,7 @@ def get_all_sales():
     if user_check() is False:
         return jsonify({"Alert": "You're not Authorized to perform action"}), 401
     all_sale = sales_cls.get_all_sales()
-    return jsonify({"Sales": all_sale}), 200
+    return jsonify(all_sale), 200
 
 
 @salebp.route('/sales/<sale_id>', methods=['GET'])
@@ -64,7 +65,7 @@ def get_one_sale(sale_id):
     sale = sales_cls.get_sale_by_id(sale_id)
     if not sale:
         return jsonify({"Not Found": "This sale has not been found"})
-    return jsonify({"Sale": sale})
+    return jsonify(sale)
 
 
 @salebp.route('/sales/products/<product_id>', methods=['GET'])
@@ -79,4 +80,4 @@ def get_sale_by_product(product_id):
     if not sales:
         return jsonify({"Alert": "The product hasn't been sold yet"}), 404
 
-    return jsonify({"Sale": sales})
+    return jsonify(sales)

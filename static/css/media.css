@@ -1,0 +1,34 @@
+@media only screen and (min-width: 100px) and (max-width: 600px) {
+    .body {
+        width: 90%;
+        margin: 10px auto;
+        font-size: 90%;
+    }
+    .main-footer{
+        display: none;
+    }
+    #sidebar {
+        width: 30%;
+    }
+    .flex-container, .flex-cart {
+        display: flex;
+        flex-direction: column;
+    }
+    .login-body{
+        background-image: none;
+    }
+
+    table, th, td{
+        border: 1px;
+        border-collapse: collapse;
+        padding: 5px;
+        margin: 0px; 
+        width: 400px;
+    }
+    
+    table{
+        margin-right: 0px;
+        background: #000000e7;
+    }
+    
+}

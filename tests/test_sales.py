@@ -1,6 +1,7 @@
 from tests import BaseTestCase
 from flask import json
 from api import app
+app.config['TESTING'] = True
 
 sample_sale = {
     "sale_quantity": 3,
@@ -22,10 +23,10 @@ class SalesTestCase(BaseTestCase):
         self.testclient = app.test_client()
         response_admin = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
                                               data=json.dumps({'email': 'admin@admin.com', 'password': 'adminpass'}))
-        self.access_token1 = json.loads(response_admin.data)['access_token']
+        self.access_token1 = json.loads(response_admin.data)['admin_token']
         response_user = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
                                              data=json.dumps({'email': 'notadmin@notadmin.com', 'password': 'userpass'}))
-        self.access_token2 = json.loads(response_user.data)['access_token']
+        self.access_token2 = json.loads(response_user.data)['user_token']
         self.headers['Authorization'] = "Bearer " + self.access_token1
         self.testclient.post('/store-manager/api/v1/admin/products', headers=self.headers,
                              data=json.dumps(sample_product))
@@ -59,11 +60,14 @@ class SalesTestCase(BaseTestCase):
         self.assertIn(b"Not enough items in stock", response.data)
 
     def test_view_all_sales(self):
+        self.headers['Authorization'] = "Bearer " + self.access_token2
+        self.testclient.post('/store-manager/api/v1/sales', headers=self.headers,
+                                        data=json.dumps(sample_sale))
         self.headers['Authorization'] = "Bearer " + self.access_token1
         response = self.testclient.get(
             '/store-manager/api/v1/sales', headers=self.headers)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Sales", response.data)
+        self.assertIn(b"sale_quantity", response.data)
 
     def test_view_all_sales_not_authorized(self):
         self.headers['Authorization'] = "Bearer " + self.access_token2

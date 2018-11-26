@@ -1,6 +1,7 @@
 from tests import BaseTestCase
 from flask import json
 from api import app
+app.config['TESTING'] = True
 
 sample_product = {
     "product_name": "Knife set",
@@ -17,10 +18,10 @@ class CategoryTestCase(BaseTestCase):
         self.testclient = app.test_client()
         response_admin = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
                                               data=json.dumps({'email': 'admin@admin.com', 'password': 'adminpass'}))
-        self.access_token1 = json.loads(response_admin.data)['access_token']
+        self.access_token1 = json.loads(response_admin.data)['admin_token']
         response_user = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
                                              data=json.dumps({'email': 'notadmin@notadmin.com', 'password': 'userpass'}))
-        self.access_token2 = json.loads(response_user.data)['access_token']
+        self.access_token2 = json.loads(response_user.data)['user_token']
 
     def test_add_new_category(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
@@ -48,10 +49,12 @@ class CategoryTestCase(BaseTestCase):
 
     def test_get_all_categories(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
+        self.testclient.post('/store-manager/api/v1/category', headers=self.headers,
+                                        data=json.dumps({"category_name": "Electronics"}))
         response = self.testclient.get(
             '/store-manager/api/v1/category', headers=self.headers)
         self.assertEquals(response.status_code, 200)
-        self.assertIn(b"Categories", response.data)
+        self.assertIn(b"category_name", response.data)
 
     def test_get_all_categories_unauthorized(self):
         self.headers['Authorization'] = "Bearer " + self.access_token2
@@ -67,7 +70,7 @@ class CategoryTestCase(BaseTestCase):
         response = self.testclient.get(
             '/store-manager/api/v1/category/1', headers=self.headers)
         self.assertEquals(response.status_code, 200)
-        self.assertIn(b"Category", response.data)
+        self.assertIn(b"category_name", response.data)
 
     def test_get_category_by_id_not_found(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
@@ -115,8 +118,7 @@ class CategoryTestCase(BaseTestCase):
                              data=json.dumps({"category_name": "Electronics"}))
         response = self.testclient.get(
             '/store-manager/api/v1/products/category/1', headers=self.headers)
-        self.assertEquals(response.status_code, 200)
-        self.assertIn(b"Products", response.data)
+        self.assertEquals(response.status_code, 200) 
 
     def test_get_products_by_category_not_found(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1

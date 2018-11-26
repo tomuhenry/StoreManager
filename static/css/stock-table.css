@@ -1,0 +1,51 @@
+table, th, td{
+    border: 2px solid white;
+    border-collapse: collapse;
+    padding: 15px;
+    margin: 5px; 
+    width: 800px;
+}
+
+table{
+    margin-right: 20px;
+}
+
+tr:hover{
+    background: #cccccc;
+    color: #000;
+}
+
+.stock-table input[type="submit"]{
+    border: none;
+    outline: none;
+    height: 30px;
+    background: #3cb6fd;
+    font-weight: bold;
+    color: #000000;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.stock-table input[type="button"]{
+    border: none;
+    outline: none;
+    margin: 4px;
+    height: 20px;
+    background: #fd3c3c;
+    color: #ffffff;
+    font-size: 12px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.stock-table input[type="text"],
+input[type="number"],
+input[type="date"] {
+    outline: none;
+    border: none;
+    width: 100%;
+    border-bottom: 1px solid #d0e1fa;
+    background: transparent;
+    height: 30px;
+    color: #4eccfd;
+    font-size: 15px;
+}

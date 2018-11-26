@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Store Manager | </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/main.css" />
+    <script src="../static/js/main.js"></script>
+</head>
+<body>
+    <div id="sidebar">
+        <div class="toggle-btn" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul>
+            <li><a href="../index.html">Logout</a></li>
+            <li><a href="inventory.html">Inventory</a></li>
+            <li><a href="users.html">Users</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+
+    </div>
+    <h1>Welcome to the Store Manager Application</h1>
+    <div class="flex-container">
+        <div class="flex-login">
+            <form action="users.html" method="POST" onsubmit="return validateUser()" name="vform">
+                <input type="text" placeholder="Name" ><br>
+                <input type="email" placeholder="Email" ><br>
+                <input type="password" placeholder="Password" ><br>
+                <input type="password" placeholder="Confirm Password" ><br>
+                <input type="submit" value="Register"><br>
+            </form>
+        </div>
+    </div>
+    <footer class="main-footer">
+        <p>The Store Management App &copy;Tomusange Henry</p>
+    </footer>
+</body>
+</html>

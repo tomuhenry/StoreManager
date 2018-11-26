@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Store Manager | </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/main.css" />
+    <script src="../static/js/main.js"></script>
+</head>
+<body>
+    <div id="sidebar">
+        <div class="toggle-btn" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul>
+            <li><a href="../index.html">Logout</a></li>
+            <li><a href="index.html">Inventory</a></li>
+            <li><a href="users.html">Users</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+
+    </div>
+    <h1>Shop Attendants</h1>
+    <div class="flex-container">
+        <div class="stock-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>Sales Made</th>
+                        <th>Hours Logged in</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Amooti</td>
+                        <td>Job</td>
+                        <td>joba@comp.com</td>
+                        <td>kitooke</td>
+                        <td>200500</td>
+                        <td>6:15 hrs</td>
+                    </tr>
+                    <tr>
+                        <td>Kitukutwe</td>
+                        <td>Simsim</td>
+                        <td>skit@comp.com</td>
+                        <td>passWord</td>
+                        <td>154300</td>
+                        <td>8:00 hrs</td>
+                    </tr>
+                    <tr>
+                        <td>Kilonda</td>
+                        <td>Komb</td>
+                        <td>kikomba@comp.com</td>
+                        <td>kikombinge</td>
+                        <td>450300</td>
+                        <td>14:30 hrs</td>
+                    </tr>
+                            
+                </tbody>
+                
+            </table>
+            <form action="add-user.html">
+                <input type="submit" value="Add User">
+            </form>
+            
+        </div>
+    </div>
+    
+    <footer class="main-footer">
+        <p>The Store Management App &copy;Tomusange Henry</p>
+    </footer>
+</body>
+</html>

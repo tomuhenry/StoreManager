@@ -1,12 +1,13 @@
 from tests import BaseTestCase
 from flask import json
 from api import app
+app.config['TESTING'] = True
 
 sample_user = {
     "name": "tom1 Admin",
     "email": "admin@trueadmin.com",
     "password": "adminpassword",
-    "rights": 'false'
+    "rights": 0
 }
 sample_user_login = {
     "email": "admin@trueadmin.com",
@@ -21,10 +22,10 @@ class UserTestCase(BaseTestCase):
         self.testclient = app.test_client()
         response_admin = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
                                               data=json.dumps({'email': 'admin@admin.com', 'password': 'adminpass'}))
-        self.access_token1 = json.loads(response_admin.data)['access_token']
+        self.access_token1 = json.loads(response_admin.data)['admin_token']
         response_user = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
                                              data=json.dumps({'email': 'notadmin@notadmin.com', 'password': 'userpass'}))
-        self.access_token2 = json.loads(response_user.data)['access_token']
+        self.access_token2 = json.loads(response_user.data)['user_token']
 
     def test_unauthorized_access(self):
         response = self.testclient.post('/store-manager/api/v1/auth/signup',
@@ -87,18 +88,7 @@ class UserTestCase(BaseTestCase):
         response = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
                                         data=json.dumps(sample_user_login))
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"access_token", response.data)
-
-    def test_unauthrized_access(self):
-        self.headers['Authorization'] = "Bearer " + self.access_token1
-        self.testclient.post('/store-manager/api/v1/auth/signup', headers=self.headers,
-                             data=json.dumps(sample_user))
-        response = self.testclient.post('/store-manager/api/v1/auth/login', headers=self.headers,
-                                        data=json.dumps(
-                                            {"email": "admin@trueadmin.com",
-                                             "password": "adminpassword"}))
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b"access_token", response.data)
+        self.assertIn(b"user_token", response.data)
 
     def test_wrong_login_email(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1
@@ -141,7 +131,7 @@ class UserTestCase(BaseTestCase):
         response = self.testclient.get(
             '/store-manager/api/v1/users', headers=self.headers)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Users", response.data)
+        self.assertIn(b"email", response.data)
 
     def test_get_all_users_unauthorized(self):
         self.headers['Authorization'] = "Bearer " + self.access_token2
@@ -172,7 +162,7 @@ class UserTestCase(BaseTestCase):
         response = self.testclient.get(
             '/store-manager/api/v1/users/email', headers=self.headers)
         self.assertEqual(response.status_code, 404)
-        self.assertIn(b"Information could not be found", response.data)
+        self.assertIn(b"Not Found", response.data)
 
     def test_delete(self):
         self.headers['Authorization'] = "Bearer " + self.access_token1

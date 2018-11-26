@@ -1,0 +1,62 @@
+.flex-cart{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.flex-cart div{
+    display: grid;
+    border: 1px #cccccc solid;
+    padding: 20px 15px;
+    border-radius: 10px;
+    margin: 3px;
+    background: #000000e7;
+    color: #ffffff;
+    -ms-flex-align: center;
+}
+.flex-cart input[type="submit"]{
+    outline: none;
+    height: 30px;
+    font-size: 15px;
+    border-radius: 12px;
+}
+.flex-cart input[type="submit"] {
+    background: #079cff;
+    color: #ffffff;
+}
+.flex-cart input[type="submit"]:hover {
+    cursor: pointer;
+    background: #127d9e;
+    color: #000;
+}
+img{
+    height: 250px;
+    width: 240px;
+    cursor: pointer;
+}
+
+#item-search{
+    outline: none;
+    position: -ms-page;
+    float: none;
+    padding: 8px;
+    margin: 8px 16px 8px 20%;
+    font-size: 17px;
+    border: none;
+    border-radius: 10px;
+}
+.search-area input[type="submit"]{
+        outline: none;
+        height: 30px;
+        font-size: 15px;
+        border-radius: 12px;
+    }
+.search-area input[type="submit"] {
+    background: #079cff;
+    color: #ffffff;
+}
+.search-area input[type="submit"]:hover {
+    cursor: pointer;
+    background: #127d9e;
+    color: #000;
+}

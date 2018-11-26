@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Store Manager | </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/main.css" />
+    <script src="../static/js/main.js"></script>
+</head>
+<body>
+    <div id="sidebar">
+        <div class="toggle-btn" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul>
+            <li><a href="../index.html">Logout</a></li>
+            <li><a href="stock.html">Inventory</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+        
+    </div>
+    
+	<h1>Current Stock and balance</h1> 
+    <div class="flex-container">
+        <div class="stock-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item name</th>
+                        <th>Date Added</th>
+                        <th>Available Stock</th>
+                        <th>size</th>
+                        <th>Unit Price</th>
+                        <th>Expiry Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1.</td>
+                        <td>Soap</td>
+                        <td>21/01/2018</td>
+                        <td>20</td>
+                        <td>1kg</td>
+                        <td>4500</td>
+                        <td>22/01/2019</td>
+                    </tr>
+                    <tr>
+                        <td>2.</td>
+                        <td>Cups</td>
+                        <td>30/06/2017</td>
+                        <td>45</td>
+                        <td>500ml</td>
+                        <td>2000</td>
+                        <td>12/01/2059</td>
+                    </tr>
+                    <tr>
+                        <td>3.</td>
+                        <td>Lotion</td>
+                        <td>22/05/2018</td>
+                        <td>120</td>
+                        <td>250g</td>
+                        <td>6500</td>
+                        <td>30/03/2020</td>
+                    </tr>
+                </tbody>
+                
+            </table>
+        </div>
+    </div>
+    <footer class="main-footer">
+        <p>The Store Management App &copy;Tomusange Henry</p>
+    </footer>
+</body>
+</html>

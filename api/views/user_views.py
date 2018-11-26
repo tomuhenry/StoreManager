@@ -70,7 +70,9 @@ def user_login():
     access_token = create_access_token(
         identity=email, expires_delta=timedelta(days=1))
 
-    return jsonify({"access_token": access_token})
+    if logged_user['rights'] == True:
+        return jsonify({"admin_token": access_token})
+    return jsonify({"user_token": access_token})
 
 
 @userbp.route('/users', methods=['GET'])
@@ -78,18 +80,17 @@ def user_login():
 def get_all_users():
     if user_check() is False:
         return jsonify({"Alert": "You're not Authorized to perform action"}), 401
-    return jsonify({"Users": user_cls.get_all_users()})
+    all_users = user_cls.get_all_users()
+    return jsonify(all_users)
 
 
 @userbp.route('/users/<email>', methods=['GET'])
 @jwt_required
 def get_user_by_email(email):
-    if user_check() is False:
-        return jsonify({"Alert": "Only admin can perform this action"}), 401
     user = user_cls.get_user_by_email(email)
     if not user:
-        abort(404)
-    return jsonify({"User": user})
+        return jsonify({"Not Found": "No user with email '{0}'".format(email)}), 404
+    return jsonify(user)
 
 
 @userbp.route('/users/<int:user_id>', methods=['GET'])
@@ -100,7 +101,7 @@ def get_user_by_id(user_id):
         return jsonify({"Alert": "You don't have permission for this action"}), 401
     if not user:
         abort(404)
-    return jsonify({"User": user})
+    return jsonify(user)
 
 
 @userbp.route('/users/<email>', methods=['DELETE'])
