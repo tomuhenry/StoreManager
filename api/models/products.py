@@ -58,9 +58,9 @@ class Products:
         return self.database_cls.sql_fetch_all(get_categories)
 
     def get_category_by_id(self, category_id):
-        get_categories = """ SELECT * FROM category 
+        get_category = """ SELECT category_name FROM category 
                 WHERE category_id = {0} """.format(category_id)
-        return self.database_cls.sql_fetch_all(get_categories)
+        return self.database_cls.sql_fetch_one(get_category)
 
     def add_category_to_product(self, product_id, category_type):
         add_to_category = """UPDATE products SET category_type = {1} 
